@@ -45,7 +45,7 @@
                 <key>spriteSourceSize</key>
                 <string>{202,276}</string>
                 <key>textureRect</key>
-                <string>{{426,0},{202,276}}</string>
+                <string>{{286,0},{202,276}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -60,7 +60,7 @@
                 <key>spriteSourceSize</key>
                 <string>{472,289}</string>
                 <key>textureRect</key>
-                <string>{{0,276},{472,289}}</string>
+                <string>{{0,692},{472,289}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -75,7 +75,7 @@
                 <key>spriteSourceSize</key>
                 <string>{441,416}</string>
                 <key>textureRect</key>
-                <string>{{0,951},{441,416}}</string>
+                <string>{{0,276},{441,416}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -90,7 +90,7 @@
                 <key>spriteSourceSize</key>
                 <string>{600,386}</string>
                 <key>textureRect</key>
-                <string>{{0,565},{600,386}}</string>
+                <string>{{0,981},{600,386}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -101,11 +101,41 @@
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{140,251}</string>
+                <string>{250,140}</string>
                 <key>spriteSourceSize</key>
-                <string>{140,251}</string>
+                <string>{250,140}</string>
                 <key>textureRect</key>
-                <string>{{286,0},{140,251}}</string>
+                <string>{{488,0},{250,140}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>wave-1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{465,364}</string>
+                <key>spriteSourceSize</key>
+                <string>{465,364}</string>
+                <key>textureRect</key>
+                <string>{{441,276},{465,364}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>wave-2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{862,626}</string>
+                <key>spriteSourceSize</key>
+                <string>{862,626}</string>
+                <key>textureRect</key>
+                <string>{{0,1367},{862,626}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -121,9 +151,9 @@
             <key>realTextureFileName</key>
             <string>objects.png</string>
             <key>size</key>
-            <string>{628,1367}</string>
+            <string>{906,1993}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:040c1cf1c83b1881f21de5bb1acc299e:ba0e16d394e14bd53ebbe1e16c89b192:458de8e5649215d6f4316a271776e5d5$</string>
+            <string>$TexturePacker:SmartUpdate:fa30fed84d4230e3df0f75bcc6662451:6303abacb83e0cd55e72b6deaf42fd1f:458de8e5649215d6f4316a271776e5d5$</string>
             <key>textureFileName</key>
             <string>objects.png</string>
         </dict>
