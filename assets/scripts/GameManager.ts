@@ -1,5 +1,6 @@
 import { _decorator, Component, director, Node } from 'cc';
 import { EventManager } from './EventManager';
+import { WebSocketResponse } from './types';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -51,13 +52,16 @@ export class GameManager extends Component {
     };
 
     // 偵聽（全部）消息事件：由參數 action 來區分個別事件
-    this._ws.onmessage = (event) => {
+    this._ws.onmessage = (event: MessageEvent) => {
       console.log('Message from server:', event.data);
+      const response: WebSocketResponse = JSON.parse(event.data);
+      this.handleWebSocketEvent(response);
     };
 
     // 偵聽連接關閉事件
     this._ws.onclose = (event) => {
       console.log('WebSocket disconnected');
+      // TODO: 伺服器斷線
     };
 
     // 偵聽錯誤事件
@@ -67,14 +71,66 @@ export class GameManager extends Component {
   }
 
   // 發送消息到 WebSocket 伺服器
-  // 使用方式： GameManager.instance.sendMessage('createRoom', { playerName: 'Morris' });
-  sendMessage(action: string, data: Record<string, any>): void {
+  // 使用方式： GameManager.instance.sendMessage('create-room', { playerName: 'Morris' });
+  sendMessage(action: string, data: Record<string, any> | null): void {
     if (this._ws && this._ws.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({ action, data });
+      // 發送消息到 WebSocket 伺服器
       this._ws.send(message);
       console.log('Message sent:', message);
     } else {
       console.error('WebSocket is not open. Message not sent.');
+    }
+  }
+
+  handleWebSocketEvent(response: WebSocketResponse): void {
+    switch (response.action) {
+      case 'room-created':
+        if (response.succ) {
+          console.log('房間建立成功:', response.data);
+          // 將房間 ID 儲存到 GameManager 中
+          this.roomId = response.data.roomId;
+          director.loadScene('02-game-scene', (err, scene) => {
+            if (err)
+              EventManager.eventTarget.emit('response-fail', '加載場景失敗');
+            console.log('GameScene 加載成功');
+            // response.data 是完整的自己的玩家資料
+            EventManager.eventTarget.emit('init-game-scene', response.data);
+          });
+        } else {
+          EventManager.eventTarget.emit('response-fail', '建立房間失敗');
+        }
+        break;
+      case 'room-joined':
+        if (response.succ) {
+          console.log('房間加入成功:', response.data);
+          // 將房間 ID 儲存到 GameManager 中
+          this.roomId = response.data.roomId;
+          director.loadScene('02-game-scene', (err, scene) => {
+            if (err)
+              EventManager.eventTarget.emit('response-fail', '加載場景失敗');
+            console.log('GameScene 加載成功');
+            // response.data 是完整的自己的玩家資料
+            EventManager.eventTarget.emit('init-game-scene', response.data);
+          });
+        } else {
+          EventManager.eventTarget.emit('response-fail', response.msg);
+        }
+        break;
+      case 'player-joined':
+        if (response.succ) {
+          console.log('玩家加入成功:', response.data);
+          // response.data 是新玩家的名稱
+          EventManager.eventTarget.emit('player-joined', response.data);
+        }
+        break;
+      case 'player-left':
+        if (response.succ) {
+          console.log('玩家離開:', response.data);
+          // response.data 是玩家的名稱
+          EventManager.eventTarget.emit('player-left', response.data);
+        }
+        break;
     }
   }
 }
