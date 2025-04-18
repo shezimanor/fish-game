@@ -3,12 +3,10 @@ const { ccclass, property } = _decorator;
 
 @ccclass('GameSceneManager')
 export class GameSceneManager extends Component {
-    start() {
+  protected onLoad(): void {
+    console.log('GameSceneManager onLoad');
+  }
+  start() {}
 
-    }
-
-    update(deltaTime: number) {
-        
-    }
+  update(deltaTime: number) {}
 }
-

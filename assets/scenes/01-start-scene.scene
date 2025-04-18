@@ -1181,7 +1181,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "0de0b153-2748-4cc5-b0e0-f47849eb6423@c21b3",
+      "__uuid__": "0de0b153-2748-4cc5-b0e0-f47849eb6423@3ff76",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -1213,7 +1213,7 @@
     "_enabled": true,
     "__prefab": null,
     "clickEvents": [],
-    "_interactable": true,
+    "_interactable": false,
     "_transition": 2,
     "_normalColor": {
       "__type__": "cc.Color",
@@ -1476,7 +1476,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "0de0b153-2748-4cc5-b0e0-f47849eb6423@daad6",
+      "__uuid__": "0de0b153-2748-4cc5-b0e0-f47849eb6423@3ff76",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -1508,7 +1508,7 @@
     "_enabled": true,
     "__prefab": null,
     "clickEvents": [],
-    "_interactable": true,
+    "_interactable": false,
     "_transition": 2,
     "_normalColor": {
       "__type__": "cc.Color",
@@ -2760,6 +2760,12 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "createButton": {
+      "__id__": 30
+    },
+    "joinButton": {
+      "__id__": 37
+    },
     "_id": "1abThcrmlIRZ785Y6t2w+q"
   },
   {
