@@ -10,6 +10,8 @@ export class GameSceneManager extends Component {
   public otherPlayerNode: Node = null;
   @property(Node)
   public otherPlayerUI: Node = null;
+  @property(Node)
+  public otherGunBody: Node = null;
   @property(Label)
   public otherPlayerNameLabel: Label = null;
   @property(Label)
@@ -25,6 +27,7 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.on('init-game-scene', this.initGameScene, this);
     EventManager.eventTarget.on('player-joined', this.addOtherPlayer, this);
     EventManager.eventTarget.on('player-left', this.removeOtherPlayer, this);
+    EventManager.eventTarget.on('rotate-gun', this.rotateGun, this);
   }
 
   start() {
@@ -38,6 +41,7 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.off('init-game-scene', this.initGameScene, this);
     EventManager.eventTarget.off('player-joined', this.addOtherPlayer, this);
     EventManager.eventTarget.off('player-left', this.removeOtherPlayer, this);
+    EventManager.eventTarget.off('rotate-gun', this.rotateGun, this);
   }
 
   initGameScene(data: ClientObject) {
@@ -53,7 +57,7 @@ export class GameSceneManager extends Component {
   }
 
   onClickQuitRoom() {
-    // 發送建立房間 'create-room' 請求
+    // 發送離開房間 'leave-room' 事件 (玩家的名字讓伺服器自己傳)
     GameManager.instance.sendMessage('leave-room', null);
     // 離開遊戲場景(可以先還原一些狀態)
     this.removeOtherPlayer();
@@ -85,5 +89,10 @@ export class GameSceneManager extends Component {
     this.otherPlayerNode.active = false;
     this.otherPlayerUI.active = false;
     this.otherPlayerNameLabel.string = '';
+  }
+
+  rotateGun(angle: string) {
+    // 這裡的 angle 是一個範圍在 20 到 160 之間的數字，角度的算法如下
+    this.otherGunBody.angle = 180 - Number(angle);
   }
 }

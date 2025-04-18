@@ -13,6 +13,7 @@ import {
   Vec3
 } from 'cc';
 import { BulletManager } from './BulletManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Gun')
@@ -72,7 +73,10 @@ export class Gun extends Component {
       Math.PI;
     // 這裡的 angleTheta 是一個範圍在 -180 到 180 之間的數字
     // 為了解決負數會被 math.clamp 換算成 20 的問題，這裡加上絕對值
-    this.bodyNode.angle = math.clamp(Math.abs(angleTheta), 20, 160);
+    const angle = math.clamp(Math.abs(angleTheta), 20, 160);
+    this.bodyNode.angle = angle;
+    // 發送砲管角度變更 'rotate-gun' 事件
+    GameManager.instance.sendMessage('rotate-gun', `${angle}`);
   }
 
   fire() {

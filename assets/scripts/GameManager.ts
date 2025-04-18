@@ -53,7 +53,7 @@ export class GameManager extends Component {
 
     // 偵聽（全部）消息事件：由參數 action 來區分個別事件
     this._ws.onmessage = (event: MessageEvent) => {
-      console.log('Message from server:', event.data);
+      // console.log('Message from server:', event.data);
       const response: WebSocketResponse = JSON.parse(event.data);
       this.handleWebSocketEvent(response);
     };
@@ -72,12 +72,12 @@ export class GameManager extends Component {
 
   // 發送消息到 WebSocket 伺服器
   // 使用方式： GameManager.instance.sendMessage('create-room', { playerName: 'Morris' });
-  sendMessage(action: string, data: Record<string, any> | null): void {
+  sendMessage(action: string, data: Record<string, any> | string | null): void {
     if (this._ws && this._ws.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({ action, data });
       // 發送消息到 WebSocket 伺服器
       this._ws.send(message);
-      console.log('Message sent:', message);
+      // console.log('Message sent:', message);
     } else {
       console.error('WebSocket is not open. Message not sent.');
     }
@@ -129,6 +129,13 @@ export class GameManager extends Component {
           console.log('玩家離開:', response.data);
           // response.data 是玩家的名稱
           EventManager.eventTarget.emit('player-left', response.data);
+        }
+        break;
+      case 'rotate-gun':
+        if (response.succ) {
+          console.log('對方轉動炮管角度:', response.data);
+          // response.data 是玩家的名稱
+          EventManager.eventTarget.emit('rotate-gun', response.data);
         }
         break;
     }

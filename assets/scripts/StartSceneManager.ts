@@ -61,7 +61,7 @@ export class StartSceneManager extends Component {
       this.popupModal.active = true;
       this.modalText.string = '請輸入玩家名稱';
     } else {
-      // 發送建立房間 'create-room' 請求
+      // 發送建立房間 'create-room' 事件
       GameManager.instance.sendMessage('create-room', {
         playerName: this.playerNameInput.string
       });
@@ -83,7 +83,7 @@ export class StartSceneManager extends Component {
       this.popupModal.active = true;
       this.modalText.string = '請輸入房間ID';
     } else {
-      // 發送加入房間 'join-room' 請求
+      // 發送加入房間 'join-room' 事件
       GameManager.instance.sendMessage('join-room', {
         roomId: this.roomIdInput.string,
         playerName: this.playerNameInput.string

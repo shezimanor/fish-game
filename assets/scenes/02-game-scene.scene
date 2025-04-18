@@ -4824,6 +4824,9 @@
     "otherPlayerUI": {
       "__id__": 72
     },
+    "otherGunBody": {
+      "__id__": 93
+    },
     "otherPlayerNameLabel": {
       "__id__": 79
     },
