@@ -685,7 +685,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "LabelBulletValue",
+    "_name": "BulletValueLabel",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2780,7 +2780,7 @@
         "__id__": 73
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 81
@@ -3175,7 +3175,7 @@
         "__id__": 89
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 101
@@ -4895,6 +4895,9 @@
     },
     "roomIdLabel": {
       "__id__": 69
+    },
+    "bulletValueLabel": {
+      "__id__": 18
     },
     "_id": "80sqyzG5NK4Z/Mxmx5GCsz"
   },

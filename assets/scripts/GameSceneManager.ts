@@ -4,6 +4,16 @@ import { ClientObject } from './types/index.d';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
+const bulletValues = {
+  1: 100,
+  2: 300,
+  3: 500,
+  4: 1000,
+  5: 2000,
+  6: 5000,
+  7: 10000
+};
+
 @ccclass('GameSceneManager')
 export class GameSceneManager extends Component {
   @property(Node)
@@ -20,6 +30,10 @@ export class GameSceneManager extends Component {
   public playerPointLabel: Label = null;
   @property(Label)
   public roomIdLabel: Label = null;
+  @property(Label)
+  public bulletValueLabel: Label = null;
+
+  public bulletLevel: number = 3;
 
   protected onLoad(): void {
     console.log('GameSceneManager onLoad');
@@ -51,6 +65,8 @@ export class GameSceneManager extends Component {
       this.playerPointLabel.string = `${data.point}`;
       this.roomIdLabel.string = `房號: ${data.roomId}`;
       if (data.other) this.addOtherPlayer(data.other);
+      // 初始化子彈價值
+      this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
     } else {
       console.error('initGameScene data is null');
     }
@@ -71,9 +87,19 @@ export class GameSceneManager extends Component {
     });
   }
 
-  onClickPlus() {}
+  onClickPlus() {
+    if (this.bulletLevel < 7) {
+      this.bulletLevel++;
+      this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
+    }
+  }
 
-  onClickMinus() {}
+  onClickMinus() {
+    if (this.bulletLevel > 1) {
+      this.bulletLevel--;
+      this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
+    }
+  }
 
   addOtherPlayer(otherPlayerName: string) {
     console.log('GameSceneManager addOtherPlayer');
