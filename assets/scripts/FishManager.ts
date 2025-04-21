@@ -72,7 +72,7 @@ export class FishManager extends Component {
         const fish = currentFishPool.getFish();
 
         if (fish) {
-          fish.getComponent(Fish).updateUUID(curFish.uuid);
+          fish.getComponent(Fish).updateFishData(curFish);
           fish.setPosition(curFish.spawnX, curFish.spawnY, 0);
           fish.setParent(this.node);
         }

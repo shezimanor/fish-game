@@ -9,7 +9,7 @@ import {
   SpriteFrame,
   UITransform
 } from 'cc';
-import { FishType } from './types/index.d';
+import { FishConfig, FishType } from './types/index.d';
 import { EventManager } from './EventManager';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
@@ -84,8 +84,9 @@ export class Fish extends Component {
     );
   }
 
-  // 更新 UUID
-  updateUUID(uuid: string) {
-    this._uuid = uuid;
+  // 更新
+  updateFishData(fish: FishConfig) {
+    this._uuid = fish.uuid;
+    this._speed = fish.speed;
   }
 }
