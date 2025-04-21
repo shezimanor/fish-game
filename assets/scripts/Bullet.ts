@@ -43,7 +43,7 @@ export class Bullet extends Component {
   // 終止子彈行為
   stopAction() {
     // 發布事件(Player.ts 訂閱)
-    EventManager.eventTarget.emit('stopBullet', this.node, this.poolName);
+    EventManager.eventTarget.emit('stop-bullet', this.node, this.poolName);
   }
 
   reset() {

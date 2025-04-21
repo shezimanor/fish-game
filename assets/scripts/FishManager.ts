@@ -1,5 +1,8 @@
 import { _decorator, Component, Node, Prefab } from 'cc';
 import { FishPool } from './FishPool';
+import { EventManager } from './EventManager';
+import { Fish } from './Fish';
+import { FishType } from './types';
 const { ccclass, property } = _decorator;
 
 @ccclass('FishManager')
@@ -40,6 +43,8 @@ export class FishManager extends Component {
       this.destroy();
     }
     // 註冊事件
+    EventManager.eventTarget.on('spawn-fish', this.spawnFish, this);
+    EventManager.eventTarget.on('stop-fish', this.stopFish, this); // Fish.ts 發布
   }
 
   protected onDestroy(): void {
@@ -47,5 +52,32 @@ export class FishManager extends Component {
       FishManager._instance = null;
     }
     // 註銷事件
+    EventManager.eventTarget.on('spawn-fish', this.spawnFish, this);
+    EventManager.eventTarget.on('stop-fish', this.stopFish, this);
+  }
+
+  spawnFish() {}
+
+  stopFish(fish: Node, fishInstance: Fish) {
+    switch (fishInstance.fishType) {
+      case FishType.Fish_01:
+        this.fish_01_pool.recycleFish(fish);
+        break;
+      case FishType.Fish_02:
+        this.fish_02_pool.recycleFish(fish);
+        break;
+      case FishType.Fish_03:
+        this.fish_03_pool.recycleFish(fish);
+        break;
+      case FishType.Fish_04:
+        this.fish_04_pool.recycleFish(fish);
+        break;
+      case FishType.Fish_05:
+        this.fish_05_pool.recycleFish(fish);
+        break;
+      default:
+        fish.destroy();
+        break;
+    }
   }
 }

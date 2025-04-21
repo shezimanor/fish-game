@@ -17,3 +17,12 @@ export type ClientObject = {
 export enum BulletPoolName {
   BulletPool
 }
+
+// 魚隻類型
+export enum FishType {
+  Fish_01 = 1,
+  Fish_02,
+  Fish_03,
+  Fish_04,
+  Fish_05
+}
