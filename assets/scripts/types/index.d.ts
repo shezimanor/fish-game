@@ -12,3 +12,8 @@ export type ClientObject = {
   point: number;
   other?: string;
 };
+
+// 子彈池名稱
+export enum BulletPoolName {
+  BulletPool
+}
