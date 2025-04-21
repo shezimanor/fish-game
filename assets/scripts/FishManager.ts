@@ -2,7 +2,7 @@ import { _decorator, Component, Node, Prefab } from 'cc';
 import { FishPool } from './FishPool';
 import { EventManager } from './EventManager';
 import { Fish } from './Fish';
-import { FishType } from './types';
+import { FishType } from './types/index.d';
 const { ccclass, property } = _decorator;
 
 @ccclass('FishManager')

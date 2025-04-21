@@ -1,6 +1,6 @@
 import { _decorator, CCInteger, Collider2D, Component, Enum, Vec3 } from 'cc';
 import { EventManager } from './EventManager';
-import { BulletPoolName } from './types';
+import { BulletPoolName } from './types/index.d';
 const { ccclass, property } = _decorator;
 
 Enum(BulletPoolName);

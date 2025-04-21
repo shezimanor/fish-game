@@ -9,7 +9,7 @@ import {
   SpriteFrame,
   UITransform
 } from 'cc';
-import { FishType } from './types';
+import { FishType } from './types/index.d';
 import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
@@ -21,8 +21,12 @@ export class Fish extends Component {
   @property({ type: FishType })
   public fishType: FishType = FishType.Fish_01;
 
+  // 可以被攻擊的狀態
+  public isHittable: boolean = true;
+
   private _speed: number = 200;
-  private _bgWidth: number = 0;
+  private _radius: number = 0;
+  private _border: number = 640;
   private _collider: Collider2D = null;
   private _animation: Animation = null;
   private _body: Sprite = null;
@@ -32,6 +36,7 @@ export class Fish extends Component {
     // 儲存初始數據
     this._body = this.node.getChildByName('Body').getComponent(Sprite);
     this._spriteFrame = this._body ? this._body.spriteFrame : null;
+    this._radius = this.getComponent(UITransform).width / 2;
   }
 
   protected onEnable(): void {}
@@ -47,16 +52,15 @@ export class Fish extends Component {
     );
 
     // 如果敵機超出邊界，就回收敵機
-    if (
-      this.node.position.x <
-      -(this._bgWidth / 2 + this.getComponent(UITransform).height / 2)
-    ) {
+    if (position.x > this._border + this._radius) {
       this.stopAction();
     }
   }
 
   // 重置魚隻狀態
   reset() {
+    // 重置魚隻狀態
+    this.isHittable = true;
     // 重置 spriteFrame
     if (this._body) {
       this._body.spriteFrame = this._spriteFrame;
@@ -65,6 +69,8 @@ export class Fish extends Component {
 
   // 終止魚隻行為
   stopAction() {
+    // 停止可被攻擊狀態
+    this.isHittable = false;
     // 發布事件(FishManager.ts 訂閱)
     EventManager.eventTarget.emit('stopFish', this.node, this);
   }

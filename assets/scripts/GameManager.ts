@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Node } from 'cc';
 import { EventManager } from './EventManager';
-import { WebSocketResponse } from './types';
+import { WebSocketResponse } from './types/index.d';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')

@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Label, Node } from 'cc';
 import { EventManager } from './EventManager';
-import { ClientObject } from './types';
+import { ClientObject } from './types/index.d';
 import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
