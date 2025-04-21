@@ -46,17 +46,25 @@ export class FishManager extends Component {
     EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
     EventManager.eventTarget.on('stop-fish', this.stopFish, this); // Fish.ts 發布
   }
+  protected start(): void {
+    this.fish_01_pool = new FishPool(this.fish_01_prefab);
+    this.fish_02_pool = new FishPool(this.fish_02_prefab);
+    this.fish_03_pool = new FishPool(this.fish_03_prefab);
+    this.fish_04_pool = new FishPool(this.fish_04_prefab);
+    this.fish_05_pool = new FishPool(this.fish_05_prefab);
+  }
 
   protected onDestroy(): void {
     if (FishManager._instance === this) {
       FishManager._instance = null;
     }
     // 註銷事件
-    EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
-    EventManager.eventTarget.on('stop-fish', this.stopFish, this);
+    EventManager.eventTarget.off('spawn-fishes', this.spawnFishes, this);
+    EventManager.eventTarget.off('stop-fish', this.stopFish, this);
   }
 
   spawnFishes(fishes: FishConfig[]) {
+    console.log('spawnFishes');
     for (let i = 0; i < fishes.length; i++) {
       const curFish = fishes[i];
       const currentFishPool: FishPool = this[`${curFish.id}_pool`];

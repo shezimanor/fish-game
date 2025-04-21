@@ -3,13 +3,11 @@ import { Node, Prefab, instantiate } from 'cc';
 export class FishPool {
   // 這個 pool 只收已經停用的魚隻 Node
   public inactivePool: Set<Node> = new Set();
-  public poolName: string = '';
   private _prefab: Prefab;
 
   // 會在 FishManager 中使用
-  constructor(prefab: Prefab, poolName: string) {
+  constructor(prefab: Prefab) {
     this._prefab = prefab;
-    this.poolName = poolName;
   }
 
   // 取得一個魚隻

@@ -76,7 +76,7 @@ export class Gun extends Component {
     const angle = math.clamp(Math.abs(angleTheta), 20, 160);
     this.bodyNode.angle = angle;
     // 發送砲管角度變更 'rotate-gun' 事件
-    GameManager.instance.sendMessage('rotate-gun', `${angle}`);
+    GameManager.instance.sendMessageWithRoomId('rotate-gun', `${angle}`);
   }
 
   fire() {

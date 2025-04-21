@@ -34,6 +34,7 @@ export class GameManager extends Component {
   }
 
   protected onDestroy(): void {
+    console.log('gameManager onDestroy');
     if (GameManager._instance === this) {
       GameManager._instance = null;
     }
@@ -154,7 +155,11 @@ export class GameManager extends Component {
         break;
       case 'spawn-fishes':
         if (response.succ) {
-          console.log('生產新魚隻:', response.data);
+          console.log(
+            '生產新魚隻:',
+            response.data[0].spawnX,
+            response.data[0].spawnY
+          );
           // response.data 是魚的資料(為陣列)
           EventManager.eventTarget.emit('spawn-fishes', response.data);
         }

@@ -43,18 +43,20 @@ export class Fish extends Component {
 
   protected onEnable(): void {}
 
-  protected start(): void {}
+  protected start(): void {
+    console.log('fish start', this.fishType);
+  }
 
   update(deltaTime: number) {
     const position = this.node.position;
     this.node.setPosition(
-      position.x + this._speed * deltaTime,
+      position.x - this._speed * deltaTime,
       position.y,
       position.z
     );
 
     // 如果魚隻超出邊界，就回收魚隻
-    if (position.x > this._border + this._radius) {
+    if (position.x <= -(this._border + this._radius)) {
       this.stopAction();
     }
   }
