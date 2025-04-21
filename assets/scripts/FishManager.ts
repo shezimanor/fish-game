@@ -2,7 +2,7 @@ import { _decorator, Component, Node, Prefab } from 'cc';
 import { FishPool } from './FishPool';
 import { EventManager } from './EventManager';
 import { Fish } from './Fish';
-import { FishType } from './types/index.d';
+import { FishConfig, FishType } from './types/index.d';
 const { ccclass, property } = _decorator;
 
 @ccclass('FishManager')
@@ -43,7 +43,7 @@ export class FishManager extends Component {
       this.destroy();
     }
     // 註冊事件
-    EventManager.eventTarget.on('spawn-fish', this.spawnFish, this);
+    EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
     EventManager.eventTarget.on('stop-fish', this.stopFish, this); // Fish.ts 發布
   }
 
@@ -52,11 +52,25 @@ export class FishManager extends Component {
       FishManager._instance = null;
     }
     // 註銷事件
-    EventManager.eventTarget.on('spawn-fish', this.spawnFish, this);
+    EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
     EventManager.eventTarget.on('stop-fish', this.stopFish, this);
   }
 
-  spawnFish() {}
+  spawnFishes(fishes: FishConfig[]) {
+    for (let i = 0; i < fishes.length; i++) {
+      const curFish = fishes[i];
+      const currentFishPool: FishPool = this[`${curFish.id}_pool`];
+      if (currentFishPool) {
+        const fish = currentFishPool.getFish();
+
+        if (fish) {
+          fish.getComponent(Fish).updateUUID(curFish.uuid);
+          fish.setPosition(curFish.spawnX, curFish.spawnY, 0);
+          fish.setParent(this.node);
+        }
+      }
+    }
+  }
 
   stopFish(fish: Node, fishInstance: Fish) {
     switch (fishInstance.fishType) {

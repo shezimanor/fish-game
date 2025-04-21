@@ -84,7 +84,7 @@ export class StartSceneManager extends Component {
       this.modalText.string = '請輸入房間ID';
     } else {
       // 發送加入房間 'join-room' 事件
-      GameManager.instance.sendMessage('join-room', {
+      GameManager.instance.sendMessageWithRoomId('join-room', {
         roomId: this.roomIdInput.string,
         playerName: this.playerNameInput.string
       });

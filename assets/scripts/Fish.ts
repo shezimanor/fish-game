@@ -11,6 +11,7 @@ import {
 } from 'cc';
 import { FishType } from './types/index.d';
 import { EventManager } from './EventManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 Enum(FishType);
@@ -31,6 +32,7 @@ export class Fish extends Component {
   private _animation: Animation = null;
   private _body: Sprite = null;
   private _spriteFrame: SpriteFrame = null;
+  private _uuid: string = '';
 
   protected onLoad(): void {
     // 儲存初始數據
@@ -51,7 +53,7 @@ export class Fish extends Component {
       position.z
     );
 
-    // 如果敵機超出邊界，就回收敵機
+    // 如果魚隻超出邊界，就回收魚隻
     if (position.x > this._border + this._radius) {
       this.stopAction();
     }
@@ -73,5 +75,15 @@ export class Fish extends Component {
     this.isHittable = false;
     // 發布事件(FishManager.ts 訂閱)
     EventManager.eventTarget.emit('stopFish', this.node, this);
+    // 發送銷毀魚隻 'destroy-invisible-fish' 事件
+    GameManager.instance.sendMessageWithRoomId(
+      'destroy-invisible-fish',
+      this._uuid
+    );
+  }
+
+  // 更新 UUID
+  updateUUID(uuid: string) {
+    this._uuid = uuid;
   }
 }

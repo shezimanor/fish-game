@@ -83,6 +83,20 @@ export class GameManager extends Component {
     }
   }
 
+  sendMessageWithRoomId(
+    action: string,
+    data: Record<string, any> | string | null
+  ): void {
+    if (this._ws && this._ws.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify({ action, roomId: this.roomId, data });
+      // 發送消息到 WebSocket 伺服器
+      this._ws.send(message);
+      // console.log('Message sent:', message);
+    } else {
+      console.error('WebSocket is not open. Message not sent.');
+    }
+  }
+
   handleWebSocketEvent(response: WebSocketResponse): void {
     switch (response.action) {
       case 'room-created':
@@ -136,6 +150,13 @@ export class GameManager extends Component {
           console.log('對方轉動炮管角度:', response.data);
           // response.data 是玩家的名稱
           EventManager.eventTarget.emit('rotate-gun', response.data);
+        }
+        break;
+      case 'spawn-fishes':
+        if (response.succ) {
+          console.log('生產新魚隻:', response.data);
+          // response.data 是魚的資料(為陣列)
+          EventManager.eventTarget.emit('spawn-fishes', response.data);
         }
         break;
     }
