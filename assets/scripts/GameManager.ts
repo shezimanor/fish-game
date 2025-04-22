@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Node } from 'cc';
+import { _decorator, Component, director } from 'cc';
 import { EventManager } from './EventManager';
 import { WebSocketResponse } from './types/index.d';
 const { ccclass, property } = _decorator;
@@ -155,11 +155,11 @@ export class GameManager extends Component {
         break;
       case 'spawn-fishes':
         if (response.succ) {
-          console.log(
-            '生產新魚隻:',
-            response.data[0].spawnX,
-            response.data[0].spawnY
-          );
+          // console.log(
+          //   '生產新魚隻:',
+          //   response.data[0].spawnX,
+          //   response.data[0].spawnY
+          // );
           // response.data 是魚的資料(為陣列)
           EventManager.eventTarget.emit('spawn-fishes', response.data);
         }

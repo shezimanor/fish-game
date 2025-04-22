@@ -4,5 +4,17 @@
     "designResolution": {
       "fitHeight": true
     }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "BULLET"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 2,
+      "1": 1
+    }
   }
 }

@@ -2681,7 +2681,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "1234-223",
+    "_string": "-",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 42,
@@ -3070,7 +3070,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "1234-223",
+    "_string": "-",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 42,
