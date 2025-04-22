@@ -1,4 +1,13 @@
-import { _decorator, Animation, Component, director, Label, Node } from 'cc';
+import {
+  _decorator,
+  Animation,
+  Component,
+  director,
+  Label,
+  Node,
+  Tween,
+  tween
+} from 'cc';
 import { EventManager } from './EventManager';
 import { ClientObject } from './types/index.d';
 import { GameManager } from './GameManager';
@@ -37,6 +46,11 @@ export class GameSceneManager extends Component {
 
   public bulletLevel: number = 3;
   public point: number = 0;
+  private _isTransition: boolean = false;
+  private _tempPoint: Record<string, number> = {
+    point: 0
+  };
+  private _tempTween: Tween<Record<string, number>> = null;
 
   protected onLoad(): void {
     console.log('GameSceneManager onLoad');
@@ -46,6 +60,21 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.on('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.on('rotate-gun', this.rotateGun, this);
     EventManager.eventTarget.on('fire-gun', this.fireGun, this);
+    EventManager.eventTarget.on(
+      'before-fire-bullet',
+      this.beforeFireBullet,
+      this
+    );
+    EventManager.eventTarget.on('before-hit-fish', this.beforeHitFish, this);
+    EventManager.eventTarget.on('spend-point', this.spendPoint, this);
+  }
+
+  protected update(dt: number): void {
+    // 更新玩家的點數
+    if (this._isTransition) {
+      this.playerPointLabel.string = `${Math.floor(this._tempPoint.point)}`;
+      this.point = Math.floor(this._tempPoint.point);
+    }
   }
 
   protected onDestroy(): void {
@@ -55,6 +84,13 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.off('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.off('rotate-gun', this.rotateGun, this);
     EventManager.eventTarget.off('fire-gun', this.fireGun, this);
+    EventManager.eventTarget.off(
+      'before-fire-bullet',
+      this.beforeFireBullet,
+      this
+    );
+    EventManager.eventTarget.off('before-hit-fish', this.beforeHitFish, this);
+    EventManager.eventTarget.off('spend-point', this.spendPoint, this);
   }
 
   initGameScene(data: ClientObject) {
@@ -129,5 +165,37 @@ export class GameSceneManager extends Component {
     console.log('fireGun');
     // 播放開火動畫
     if (this.otherGunBodyAnimation) this.otherGunBodyAnimation.play();
+  }
+
+  //
+  beforeFireBullet() {
+    GameManager.instance.sendMessageWithRoomId('fire-bullet', {
+      bulletValue: bulletValues[this.bulletLevel]
+    });
+  }
+
+  // 這個方法是用來接魚的 uuid 和這裡的 bulletValue 一起發送給伺服器
+  beforeHitFish(uuid: string) {
+    GameManager.instance.sendMessageWithRoomId('hit-fish', {
+      uuid,
+      bulletValue: bulletValues[this.bulletLevel]
+    });
+  }
+
+  // 這個方法是用來更新玩家的點數
+  spendPoint(currentPoint: number) {
+    if (this._tempTween && this._tempTween.running) {
+      this._tempTween.stop();
+    }
+    this._isTransition = true;
+    this._tempPoint.point = this.point;
+    this._tempTween = tween(this._tempPoint)
+      .to(0.5, { point: currentPoint })
+      .call(() => {
+        // 動畫狀態關閉
+        this._isTransition = false;
+        this.playerPointLabel.string = `${currentPoint}`;
+      })
+      .start();
   }
 }

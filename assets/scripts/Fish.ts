@@ -126,7 +126,7 @@ export class Fish extends Component {
       this.isHittable = false;
       console.log('Hit Fish: ', this._fishId);
       // 發送擊中魚隻 'hit-fish' 事件
-      // GameManager.instance.sendMessageWithRoomId('hit-fish', this._uuid);
+      EventManager.eventTarget.emit('before-hit-fish', this._uuid);
     }
   }
 }

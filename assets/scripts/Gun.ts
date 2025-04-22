@@ -86,7 +86,7 @@ export class Gun extends Component {
     // 發射子彈
     this.bulletManager.spawnBullet();
     // 扣點數(發布事件給 GameSceneManager，讓他傳訊息給後端)
-    EventManager.eventTarget.emit('fire-bullet', this.node);
+    EventManager.eventTarget.emit('before-fire-bullet');
     // 發送射擊 'fire-gun' 事件(告訴其他玩家，我發射子彈了)
     GameManager.instance.sendMessageWithRoomId('fire-gun', null);
   }

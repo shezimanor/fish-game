@@ -100,6 +100,7 @@ export class GameManager extends Component {
 
   handleWebSocketEvent(response: WebSocketResponse): void {
     switch (response.action) {
+      // 玩家建立房間
       case 'room-created':
         if (response.succ) {
           console.log('房間建立成功:', response.data);
@@ -116,6 +117,7 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('response-fail', '建立房間失敗');
         }
         break;
+      // 玩家加入房間
       case 'room-joined':
         if (response.succ) {
           console.log('房間加入成功:', response.data);
@@ -132,6 +134,7 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('response-fail', response.msg);
         }
         break;
+      // 其他玩家加入房間
       case 'player-joined':
         if (response.succ) {
           console.log('玩家加入成功:', response.data);
@@ -139,6 +142,7 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('player-joined', response.data);
         }
         break;
+      // 其他玩家離開房間
       case 'player-left':
         if (response.succ) {
           console.log('玩家離開:', response.data);
@@ -158,6 +162,13 @@ export class GameManager extends Component {
         if (response.succ) {
           // response.data 是空的
           EventManager.eventTarget.emit('fire-gun');
+        }
+        break;
+      // 扣點數(開火後的回應)
+      case 'spend-point':
+        if (response.succ) {
+          // response.data 是扣除本次的子彈花費後的新的點數總量
+          EventManager.eventTarget.emit('spend-point', response.data);
         }
         break;
       case 'spawn-fishes':
