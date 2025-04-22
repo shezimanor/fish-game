@@ -1,4 +1,12 @@
-import { _decorator, CCInteger, Collider2D, Component, Enum, Vec3 } from 'cc';
+import {
+  _decorator,
+  CCInteger,
+  Collider2D,
+  Component,
+  Contact2DType,
+  Enum,
+  Vec3
+} from 'cc';
 import { EventManager } from './EventManager';
 import { BulletPoolName } from './types/index.d';
 const { ccclass, property } = _decorator;
@@ -13,17 +21,14 @@ export class Bullet extends Component {
   @property(CCInteger)
   public speed: number = 1000;
 
-  public collider: Collider2D = null;
-  private _limit: number = 1000;
+  private _collider: Collider2D = null;
+  private _limit: number = 700;
   private _directionVec3: Vec3 = new Vec3(0, 0, 0);
   private _tempVec3: Vec3 = new Vec3(0, 0, 0);
 
   protected onLoad(): void {
     // 設定碰撞元件
-    this.collider = this.getComponent(Collider2D);
-    this.scheduleOnce(() => {
-      this.node.destroy();
-    }, 6);
+    this._collider = this.getComponent(Collider2D);
   }
 
   protected onEnable(): void {
@@ -38,16 +43,22 @@ export class Bullet extends Component {
     this._tempVec3.set(this._directionVec3).multiplyScalar(movement);
     this.node.setWorldPosition(position.add(this._tempVec3));
     // 如果子彈超出邊界，就回收子彈
+    if (
+      Math.abs(position.x) >= this._limit ||
+      Math.abs(position.y) >= this._limit
+    ) {
+      this.stopAction();
+    }
   }
 
   // 終止子彈行為
   stopAction() {
-    // 發布事件(Player.ts 訂閱)
-    EventManager.eventTarget.emit('stop-bullet', this.node, this.poolName);
+    // 發布事件(BulletManager.ts 訂閱)
+    EventManager.eventTarget.emit('stop-bullet', this.node);
   }
 
   reset() {
-    if (this.collider) this.collider.enabled = true;
+    if (this._collider) this._collider.enabled = true;
   }
 
   // 設定子彈的移動的方向向量

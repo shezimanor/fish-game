@@ -83,6 +83,6 @@ export class Gun extends Component {
     // 會直接播放預設動畫（這裡的預設動畫就是開火動畫）
     if (this.animation) this.animation.play();
     // 發射子彈
-    this.bulletManager.createBullet();
+    this.bulletManager.spawnBullet();
   }
 }
