@@ -4884,6 +4884,9 @@
     "otherGunBody": {
       "__id__": 93
     },
+    "otherGunBodyAnimation": {
+      "__id__": 97
+    },
     "otherPlayerNameLabel": {
       "__id__": 79
     },

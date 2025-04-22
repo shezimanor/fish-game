@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Label, Node } from 'cc';
+import { _decorator, Animation, Component, director, Label, Node } from 'cc';
 import { EventManager } from './EventManager';
 import { ClientObject } from './types/index.d';
 import { GameManager } from './GameManager';
@@ -22,6 +22,8 @@ export class GameSceneManager extends Component {
   public otherPlayerUI: Node = null;
   @property(Node)
   public otherGunBody: Node = null;
+  @property(Animation)
+  public otherGunBodyAnimation: Animation = null;
   @property(Label)
   public otherPlayerNameLabel: Label = null;
   @property(Label)
@@ -34,6 +36,7 @@ export class GameSceneManager extends Component {
   public bulletValueLabel: Label = null;
 
   public bulletLevel: number = 3;
+  public point: number = 0;
 
   protected onLoad(): void {
     console.log('GameSceneManager onLoad');
@@ -42,13 +45,8 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.on('player-joined', this.addOtherPlayer, this);
     EventManager.eventTarget.on('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.on('rotate-gun', this.rotateGun, this);
+    EventManager.eventTarget.on('fire-gun', this.fireGun, this);
   }
-
-  start() {
-    console.log('GameSceneManager start');
-  }
-
-  update(deltaTime: number) {}
 
   protected onDestroy(): void {
     // 註銷事件
@@ -56,14 +54,17 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.off('player-joined', this.addOtherPlayer, this);
     EventManager.eventTarget.off('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.off('rotate-gun', this.rotateGun, this);
+    EventManager.eventTarget.off('fire-gun', this.fireGun, this);
   }
 
   initGameScene(data: ClientObject) {
-    console.log('GameSceneManager initGameScene');
+    // console.log('GameSceneManager initGameScene');
     if (data) {
-      this.playerNameLabel.string = `${data.playerName}`;
-      this.playerPointLabel.string = `${data.point}`;
       this.roomIdLabel.string = `房號: ${data.roomId}`;
+      this.playerNameLabel.string = `${data.playerName}`;
+      // 另外紀錄數值，因為需要播放動畫
+      this.point = data.point;
+      this.playerPointLabel.string = `${this.point}`;
       if (data.other) this.addOtherPlayer(data.other);
       // 初始化子彈價值
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
@@ -102,7 +103,7 @@ export class GameSceneManager extends Component {
   }
 
   addOtherPlayer(otherPlayerName: string) {
-    console.log('GameSceneManager addOtherPlayer');
+    // console.log('GameSceneManager addOtherPlayer');
     if (otherPlayerName) {
       this.otherPlayerNode.active = true;
       this.otherPlayerUI.active = true;
@@ -111,14 +112,22 @@ export class GameSceneManager extends Component {
   }
 
   removeOtherPlayer() {
-    console.log('GameSceneManager removeOtherPlayer');
+    // console.log('GameSceneManager removeOtherPlayer');
     this.otherPlayerNode.active = false;
     this.otherPlayerUI.active = false;
     this.otherPlayerNameLabel.string = '';
   }
 
+  // 這個方法是用來控制其他玩家的槍管，自己的槍管不會被這個方法控制
   rotateGun(angle: string) {
     // 這裡的 angle 是一個範圍在 20 到 160 之間的數字，角度的算法如下
     this.otherGunBody.angle = 180 - Number(angle);
+  }
+
+  // 這個方法是用來控制其他玩家的槍管擊發動畫，自己的槍管不會被這個方法控制
+  fireGun() {
+    console.log('fireGun');
+    // 播放開火動畫
+    if (this.otherGunBodyAnimation) this.otherGunBodyAnimation.play();
   }
 }

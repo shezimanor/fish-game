@@ -146,20 +146,22 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('player-left', response.data);
         }
         break;
+      // 其他玩家轉動槍管
       case 'rotate-gun':
         if (response.succ) {
-          console.log('對方轉動炮管角度:', response.data);
-          // response.data 是玩家的名稱
+          // response.data 是角度
           EventManager.eventTarget.emit('rotate-gun', response.data);
+        }
+        break;
+      // 其他玩家開火
+      case 'fire-gun':
+        if (response.succ) {
+          // response.data 是空的
+          EventManager.eventTarget.emit('fire-gun');
         }
         break;
       case 'spawn-fishes':
         if (response.succ) {
-          // console.log(
-          //   '生產新魚隻:',
-          //   response.data[0].spawnX,
-          //   response.data[0].spawnY
-          // );
           // response.data 是魚的資料(為陣列)
           EventManager.eventTarget.emit('spawn-fishes', response.data);
         }
