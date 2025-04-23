@@ -2,7 +2,7 @@ import { _decorator, Component, Node, Prefab } from 'cc';
 import { FishPool } from './FishPool';
 import { EventManager } from './EventManager';
 import { Fish } from './Fish';
-import { FishConfig, FishType } from './types/index.d';
+import { FishConfig, FishType, HitFishResult } from './types/index.d';
 const { ccclass, property } = _decorator;
 
 @ccclass('FishManager')
@@ -45,6 +45,7 @@ export class FishManager extends Component {
     // 註冊事件
     EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
     EventManager.eventTarget.on('stop-fish', this.stopFish, this); // Fish.ts 發布
+    EventManager.eventTarget.on('return-result', this.getHitFishResult, this);
   }
 
   protected start(): void {
@@ -77,6 +78,12 @@ export class FishManager extends Component {
           fish.setParent(this.node);
         }
       }
+    }
+  }
+
+  getHitFishResult(response: HitFishResult) {
+    // console.log('getHitFishResult', response);
+    if (response.result) {
     }
   }
 

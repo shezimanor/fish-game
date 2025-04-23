@@ -171,6 +171,17 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('spend-point', response.data);
         }
         break;
+      // 中獎回報
+      case 'return-result':
+        if (response.succ) {
+          // response.data 是 { result, uuid, fishId, point } 其中 point 是玩家的新點數總值
+          EventManager.eventTarget.emit('return-result', response.data);
+        } else {
+          // TODO: 找不到魚隻
+          console.log('❌ return-result:', response.msg);
+        }
+        break;
+      // 魚隻生成
       case 'spawn-fishes':
         if (response.succ) {
           // response.data 是魚的資料(為陣列)
