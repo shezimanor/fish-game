@@ -126,7 +126,7 @@ export class Fish extends Component {
     this.bodyNode.active = true;
     this.bodyNode.setScale(1, 1, 1);
     this.bodyNode.getComponent(Sprite).color = this._color;
-    this.bodyAnimation.play('FishIdle');
+    this.bodyAnimation.play('FishSwim');
   }
 
   // 終止魚隻行為
