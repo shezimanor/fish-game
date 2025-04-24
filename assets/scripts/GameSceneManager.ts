@@ -113,6 +113,7 @@ export class GameSceneManager extends Component {
       this.playerNameLabel.string = `${data.playerName}`;
       // 另外紀錄數值，因為需要播放動畫
       this.point = data.point;
+      this._cachedPoint = data.point;
       this.playerPointLabel.string = `${this.point}`;
       if (data.other) this.addOtherPlayer(data.other);
       // 初始化子彈價值
