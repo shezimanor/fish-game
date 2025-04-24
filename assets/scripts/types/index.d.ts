@@ -46,5 +46,5 @@ export interface HitFishResult {
   result: boolean; // 是否中獎
   fishId: string; // 魚類別的 ID
   uuid: string; // 魚的 UUID
-  point: number; // 加上中獎結果的當前點數總額
+  point: number; // 加上中獎結果的當前點數總額(用不到)
 }

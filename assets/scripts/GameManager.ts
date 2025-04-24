@@ -168,7 +168,7 @@ export class GameManager extends Component {
       case 'spend-point':
         if (response.succ) {
           // response.data 是扣除本次的子彈花費後的新的點數總量
-          EventManager.eventTarget.emit('spend-point', response.data);
+          EventManager.eventTarget.emit('update-point', response.data);
         }
         break;
       // 中獎回報
@@ -179,6 +179,12 @@ export class GameManager extends Component {
         } else {
           // TODO: 找不到魚隻
           console.log('❌ return-result:', response.msg);
+        }
+        break;
+      case 'get-point-response':
+        if (response.succ) {
+          // response.data 是新的點數總量
+          EventManager.eventTarget.emit('update-point', response.data);
         }
         break;
       // 魚隻生成

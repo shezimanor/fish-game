@@ -47,10 +47,12 @@ export class GameSceneManager extends Component {
   public bulletLevel: number = 3;
   public point: number = 0;
   private _isTransition: boolean = false;
+  // 為了讓 tween 能夠執行 point，必須使用物件封裝
   private _tempPoint: Record<string, number> = {
     point: 0
   };
   private _tempTween: Tween<Record<string, number>> = null;
+  private _cachedPoint: number = 0;
 
   protected onLoad(): void {
     console.log('GameSceneManager onLoad');
@@ -66,7 +68,7 @@ export class GameSceneManager extends Component {
       this
     );
     EventManager.eventTarget.on('before-hit-fish', this.beforeHitFish, this);
-    EventManager.eventTarget.on('spend-point', this.spendPoint, this);
+    EventManager.eventTarget.on('update-point', this.updatePoint, this);
   }
 
   protected update(dt: number): void {
@@ -90,7 +92,7 @@ export class GameSceneManager extends Component {
       this
     );
     EventManager.eventTarget.off('before-hit-fish', this.beforeHitFish, this);
-    EventManager.eventTarget.off('spend-point', this.spendPoint, this);
+    EventManager.eventTarget.off('update-point', this.updatePoint, this);
   }
 
   initGameScene(data: ClientObject) {
@@ -183,7 +185,7 @@ export class GameSceneManager extends Component {
   }
 
   // 這個方法是用來更新玩家的點數
-  spendPoint(currentPoint: number) {
+  updatePoint(currentPoint: number) {
     if (this._tempTween && this._tempTween.running) {
       this._tempTween.stop();
     }

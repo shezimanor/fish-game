@@ -215,6 +215,10 @@
       {
         "__uuid__": "943aa990-e7d6-4951-ab15-31996fbdbf2c",
         "__expectedType__": "cc.AnimationClip"
+      },
+      {
+        "__uuid__": "bca22c07-b30f-48a7-bc78-3255d7bae9f0",
+        "__expectedType__": "cc.AnimationClip"
       }
     ],
     "_defaultClip": {
@@ -420,6 +424,16 @@
       "__id__": 19
     },
     "fishType": 3,
+    "bodyNode": {
+      "__id__": 2
+    },
+    "bodyAnimation": {
+      "__id__": 7
+    },
+    "multiplierNode": {
+      "__id__": 10
+    },
+    "zoomOutAnimationName": "FishZoomOut",
     "_id": ""
   },
   {

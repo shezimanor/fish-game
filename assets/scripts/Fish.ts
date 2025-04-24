@@ -1,12 +1,13 @@
 import {
   _decorator,
+  Animation,
+  AnimationState,
+  CCString,
   Collider2D,
   Component,
   Contact2DType,
   Enum,
   Node,
-  Sprite,
-  SpriteFrame,
   UITransform
 } from 'cc';
 import { FishConfig, FishType } from './types/index.d';
@@ -22,6 +23,18 @@ export class Fish extends Component {
   // 魚隻類型
   @property({ type: FishType })
   public fishType: FishType = FishType.Fish_01;
+  // 圖片 Node
+  @property(Node)
+  public bodyNode: Node = null;
+  // 圖片 Animation
+  @property(Animation)
+  public bodyAnimation: Animation = null;
+  // 倍率 Node
+  @property(Node)
+  public multiplierNode: Node = null;
+  // 被擊中動畫（ZoomOut動畫）
+  @property(CCString)
+  private zoomOutAnimationName: string = '';
 
   // 可以被攻擊的狀態
   public isHittable: boolean = true;
@@ -30,16 +43,11 @@ export class Fish extends Component {
   private _radius: number = 0;
   private _border: number = 640;
   private _collider: Collider2D = null;
-  private _animation: Animation = null;
-  private _body: Sprite = null;
-  private _spriteFrame: SpriteFrame = null;
   private _uuid: string = '';
   private _fishId: string = '';
 
   protected onLoad(): void {
     // 儲存初始數據
-    this._body = this.node.getChildByName('Body').getComponent(Sprite);
-    this._spriteFrame = this._body ? this._body.spriteFrame : null;
     this._radius = this.getComponent(UITransform).width / 2;
 
     // 設定碰撞元件
@@ -49,7 +57,9 @@ export class Fish extends Component {
     }
   }
 
-  protected onEnable(): void {}
+  protected onEnable(): void {
+    this.reset();
+  }
 
   protected start(): void {
     // console.log('fish start', this.fishType);
@@ -84,10 +94,11 @@ export class Fish extends Component {
   reset() {
     // 重置魚隻狀態
     this.isHittable = true;
-    // 重置 spriteFrame
-    if (this._body) {
-      this._body.spriteFrame = this._spriteFrame;
-    }
+    // 重置倍率 Node
+    this.multiplierNode.active = false;
+    // 重置圖片 Node
+    this.bodyNode.setScale(1, 1, 1);
+    this.bodyAnimation.play('FishIdle');
   }
 
   // 終止魚隻行為
@@ -103,11 +114,33 @@ export class Fish extends Component {
     );
   }
 
-  // 更新
+  // 更新魚隻狀態，並回傳{ uuid, this }，方便 FishManager.ts 使用
   updateFishData(fish: FishConfig) {
     this._uuid = fish.uuid;
     this._speed = fish.speed;
     this._fishId = fish.id;
+    return { uuid: this._uuid, fishInstance: this };
+  }
+
+  // 播放 ZoomOut 動畫(因為中獎了)
+  playZoomOutAnimation() {
+    this.bodyAnimation.play(this.zoomOutAnimationName);
+    // 魚隻停止移動
+    this._speed = 0;
+  }
+
+  // 動畫播放結束
+  onAnimationFinished(type: Animation.EventType, state: AnimationState) {
+    if (state.name === this.zoomOutAnimationName) {
+      // 顯示倍率
+      this.multiplierNode.active = true;
+      // 延遲執行 stopAction
+      this.scheduleOnce(() => {
+        this.stopAction();
+      }, 0.4);
+      // 觸發玩家點數更新
+      GameManager.instance.sendMessageWithRoomId('get-point', null);
+    }
   }
 
   // 碰撞開始

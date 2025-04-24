@@ -36,6 +36,9 @@ export class FishManager extends Component {
   public fish_04_pool: FishPool = null;
   public fish_05_pool: FishPool = null;
 
+  // 搜尋用魚隻快取空間
+  private _fishCached: { [key: string]: Fish } = {};
+
   protected onLoad(): void {
     if (!FishManager._instance) {
       FishManager._instance = this;
@@ -73,7 +76,13 @@ export class FishManager extends Component {
       if (currentFishPool) {
         const fish = currentFishPool.getFish();
         if (fish) {
-          fish.getComponent(Fish).updateFishData(curFish);
+          // 更新魚隻狀態
+          const { uuid, fishInstance } = fish
+            .getComponent(Fish)
+            .updateFishData(curFish);
+          // 保存魚隻資料
+          this._fishCached[uuid] = fishInstance;
+          // 設定魚隻的初始位置
           fish.setPosition(curFish.spawnX, curFish.spawnY, 0);
           fish.setParent(this.node);
         }
@@ -84,10 +93,19 @@ export class FishManager extends Component {
   getHitFishResult(response: HitFishResult) {
     // console.log('getHitFishResult', response);
     if (response.result) {
+      // 中獎了
+      const fishInstance = this._fishCached[response.uuid];
+      if (fishInstance) fishInstance.playZoomOutAnimation();
+    } else {
+      // 沒中
     }
   }
 
   stopFish(fish: Node, fishInstance: Fish) {
+    // 將魚隻從魚隻快取空間中移除
+    if (this._fishCached[fishInstance.uuid]) {
+      delete this._fishCached[fishInstance.uuid];
+    }
     switch (fishInstance.fishType) {
       case FishType.Fish_01:
         this.fish_01_pool.recycleFish(fish);
