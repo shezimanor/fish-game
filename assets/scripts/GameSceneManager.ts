@@ -189,9 +189,9 @@ export class GameSceneManager extends Component {
   checkPoint(currentPoint: number) {
     // 發送當前點數是否足夠擊發子彈
     if (currentPoint < bulletValues[this.bulletLevel]) {
-      EventManager.eventTarget.emit('switch-fire', false);
+      EventManager.eventTarget.emit('switch-can-fire', false);
     } else {
-      EventManager.eventTarget.emit('switch-fire', true);
+      EventManager.eventTarget.emit('switch-can-fire', true);
     }
   }
 
