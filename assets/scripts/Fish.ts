@@ -4,10 +4,12 @@ import {
   AnimationState,
   CCString,
   Collider2D,
+  Color,
   Component,
   Contact2DType,
   Enum,
   Node,
+  Sprite,
   UITransform
 } from 'cc';
 import { FishConfig, FishType } from './types/index.d';
@@ -32,9 +34,12 @@ export class Fish extends Component {
   // 倍率 Node
   @property(Node)
   public multiplierNode: Node = null;
-  // 被擊中動畫（ZoomOut動畫）
+  // 被擊中且中獎動畫（ZoomOut動畫）
   @property(CCString)
   private zoomOutAnimationName: string = '';
+  // 被擊中沒中獎動畫（Hit動畫）
+  @property(CCString)
+  private hitAnimationName: string = '';
 
   // 可以被攻擊的狀態
   public isHittable: boolean = true;
@@ -45,10 +50,20 @@ export class Fish extends Component {
   private _collider: Collider2D = null;
   private _uuid: string = '';
   private _fishId: string = '';
+  private _color: Color = new Color(255, 255, 255, 255);
 
   protected onLoad(): void {
     // 儲存初始數據
     this._radius = this.getComponent(UITransform).width / 2;
+
+    // 設定動畫事件
+    if (this.bodyAnimation) {
+      this.bodyAnimation.on(
+        Animation.EventType.FINISHED,
+        this.onAnimationFinished,
+        this
+      );
+    }
 
     // 設定碰撞元件
     this._collider = this.getComponent(Collider2D);
@@ -59,10 +74,6 @@ export class Fish extends Component {
 
   protected onEnable(): void {
     this.reset();
-  }
-
-  protected start(): void {
-    // console.log('fish start', this.fishType);
   }
 
   update(deltaTime: number) {
@@ -80,6 +91,15 @@ export class Fish extends Component {
   }
 
   protected onDestroy(): void {
+    // 註銷動畫事件
+    if (this.bodyAnimation) {
+      this.bodyAnimation.off(
+        Animation.EventType.FINISHED,
+        this.onAnimationFinished,
+        this
+      );
+    }
+
     // 註銷碰撞事件
     if (this._collider) {
       this._collider.off(
@@ -97,7 +117,9 @@ export class Fish extends Component {
     // 重置倍率 Node
     this.multiplierNode.active = false;
     // 重置圖片 Node
+    this.bodyNode.active = true;
     this.bodyNode.setScale(1, 1, 1);
+    this.bodyNode.getComponent(Sprite).color = this._color;
     this.bodyAnimation.play('FishIdle');
   }
 
@@ -122,11 +144,26 @@ export class Fish extends Component {
     return { uuid: this._uuid, fishInstance: this };
   }
 
-  // 播放 ZoomOut 動畫(因為中獎了)
-  playZoomOutAnimation() {
-    this.bodyAnimation.play(this.zoomOutAnimationName);
+  // 還原可攻擊狀態
+  resetHittable() {
+    this.isHittable = true;
+    this.playHitAnimation();
+  }
+
+  // 中獎處理
+  freezeFish() {
     // 魚隻停止移動
     this._speed = 0;
+    this.playZoomOutAnimation();
+  }
+
+  playHitAnimation() {
+    this.bodyAnimation.play(this.hitAnimationName);
+  }
+
+  // 播放 ZoomOut 動畫
+  playZoomOutAnimation() {
+    this.bodyAnimation.play(this.zoomOutAnimationName);
   }
 
   // 動畫播放結束
@@ -134,10 +171,11 @@ export class Fish extends Component {
     if (state.name === this.zoomOutAnimationName) {
       // 顯示倍率
       this.multiplierNode.active = true;
+      this.bodyNode.active = false;
       // 延遲執行 stopAction
       this.scheduleOnce(() => {
         this.stopAction();
-      }, 0.4);
+      }, 0.7);
       // 觸發玩家點數更新
       GameManager.instance.sendMessageWithRoomId('get-point', null);
     }
@@ -148,18 +186,18 @@ export class Fish extends Component {
     const bullet = otherCollider.getComponent(Bullet);
     // 如果是子彈才處理
     if (!bullet) return;
-    // 停用「子彈」的碰撞元件（停止檢測碰撞）
-    bullet.closeCollider();
-    // 停用子彈行為
-    this.scheduleOnce(() => {
-      bullet.stopAction();
-    }, 0);
     // 魚隻被擊中
     if (this.isHittable) {
       this.isHittable = false;
       console.log('Hit Fish: ', this._fishId);
       // 發送擊中魚隻 'hit-fish' 事件
       EventManager.eventTarget.emit('before-hit-fish', this._uuid);
+      // 停用「子彈」的碰撞元件（停止檢測碰撞）
+      bullet.closeCollider();
+      // 停用子彈行為
+      this.scheduleOnce(() => {
+        bullet.stopAction();
+      }, 0);
     }
   }
 }

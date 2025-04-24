@@ -92,12 +92,13 @@ export class FishManager extends Component {
 
   getHitFishResult(response: HitFishResult) {
     // console.log('getHitFishResult', response);
+    const fishInstance = this._fishCached[response.uuid];
     if (response.result) {
-      // 中獎了
-      const fishInstance = this._fishCached[response.uuid];
-      if (fishInstance) fishInstance.playZoomOutAnimation();
+      // 中獎了(內含 ZoomOut 動畫)
+      if (fishInstance) fishInstance.freezeFish();
     } else {
-      // 沒中
+      // 沒中(內含被 Hit 動畫)
+      if (fishInstance) fishInstance.resetHittable();
     }
   }
 

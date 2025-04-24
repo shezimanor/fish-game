@@ -219,6 +219,10 @@
       {
         "__uuid__": "bca22c07-b30f-48a7-bc78-3255d7bae9f0",
         "__expectedType__": "cc.AnimationClip"
+      },
+      {
+        "__uuid__": "57a2f34f-16cf-4165-85d7-38d0e7f27393",
+        "__expectedType__": "cc.AnimationClip"
       }
     ],
     "_defaultClip": null,
@@ -431,6 +435,7 @@
       "__id__": 10
     },
     "zoomOutAnimationName": "FishZoomOut",
+    "hitAnimationName": "FishHit",
     "_id": ""
   },
   {
