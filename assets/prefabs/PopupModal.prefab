@@ -29,10 +29,13 @@
     "_components": [
       {
         "__id__": 42
+      },
+      {
+        "__id__": 44
       }
     ],
     "_prefab": {
-      "__id__": 44
+      "__id__": 46
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -473,7 +476,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "TextMessage",
+    "_name": "ModalText",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -574,7 +577,7 @@
     "_string": "\n",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 61,
+    "_actualFontSize": 49,
     "_fontSize": 32,
     "_fontFamily": "Arial",
     "_lineHeight": 32,
@@ -1100,6 +1103,24 @@
     "fileId": "c0gxUcp6dC8q2k0noWWKqz"
   },
   {
+    "__type__": "cc.BlockInputEvents",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 45
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "aductgUplCG5htyB9rPmnq"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -1108,6 +1129,7 @@
       "__id__": 0
     },
     "fileId": "7blVFwrqVKe7v/GHtAT9me",
+    "instance": null,
     "targetOverrides": null
   }
 ]

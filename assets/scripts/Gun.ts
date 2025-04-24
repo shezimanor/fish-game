@@ -94,8 +94,8 @@ export class Gun extends Component {
 
   fire() {
     if (!this._canFire) {
-      // TODO: 跳出視窗
-      console.error('點數不足，無法開火');
+      // 發送事件給 GameSceneManager，讓他顯示提示訊息
+      EventManager.eventTarget.emit('show-fire-fail');
       return;
     }
     // 會直接播放預設動畫（這裡的預設動畫就是開火動畫）

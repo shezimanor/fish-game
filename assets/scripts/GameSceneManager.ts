@@ -43,6 +43,14 @@ export class GameSceneManager extends Component {
   public roomIdLabel: Label = null;
   @property(Label)
   public bulletValueLabel: Label = null;
+  @property(Node)
+  public popupModal: Node = null;
+  @property(Label)
+  public modalText: Label = null;
+  @property(Node)
+  public popupQuitModal: Node = null;
+  @property(Label)
+  public quitModalText: Label = null;
 
   public bulletLevel: number = 3;
   public point: number = 0;
@@ -70,6 +78,7 @@ export class GameSceneManager extends Component {
     );
     EventManager.eventTarget.on('before-hit-fish', this.beforeHitFish, this);
     EventManager.eventTarget.on('update-point', this.updatePoint, this);
+    EventManager.eventTarget.on('show-fire-fail', this.showFireFail, this);
   }
 
   protected update(dt: number): void {
@@ -94,6 +103,7 @@ export class GameSceneManager extends Component {
     );
     EventManager.eventTarget.off('before-hit-fish', this.beforeHitFish, this);
     EventManager.eventTarget.off('update-point', this.updatePoint, this);
+    EventManager.eventTarget.off('show-fire-fail', this.showFireFail, this);
   }
 
   initGameScene(data: ClientObject) {
@@ -112,6 +122,18 @@ export class GameSceneManager extends Component {
     }
   }
 
+  onClickClose() {
+    // 關閉視窗
+    this.popupModal.active = false;
+    this.modalText.string = '';
+  }
+
+  onClickConfirm() {
+    // 關閉視窗
+    this.popupModal.active = false;
+    this.modalText.string = '';
+  }
+
   onClickQuitRoom() {
     // 發送離開房間 'leave-room' 事件 (玩家的名字讓伺服器自己傳)
     GameManager.instance.sendMessage('leave-room', null);
@@ -120,6 +142,8 @@ export class GameSceneManager extends Component {
     this.playerNameLabel.string = '';
     this.playerPointLabel.string = '';
     this.roomIdLabel.string = '';
+    this.popupModal.active = false;
+    this.popupQuitModal.active = false;
     director.loadScene('01-start-scene', (err, scene) => {
       console.log('StartScene 加載成功');
       // response.data 是完整的自己的玩家資料
@@ -172,7 +196,7 @@ export class GameSceneManager extends Component {
     if (this.otherGunBodyAnimation) this.otherGunBodyAnimation.play();
   }
 
-  //
+  // 在擊發子彈前，發送消耗點數事件給伺服器
   beforeFireBullet() {
     GameManager.instance.sendMessageWithRoomId('fire-bullet', {
       bulletValue: bulletValues[this.bulletLevel]
@@ -186,7 +210,14 @@ export class GameSceneManager extends Component {
       bulletValue: bulletValues[this.bulletLevel]
     });
   }
+
+  // 判斷當前點數，執行對應措施
   checkPoint(currentPoint: number) {
+    // 確認當前子彈是否小於等於 0
+    if (currentPoint <= 0) {
+      // 跳出離開房間的視窗
+      this.showPopupQuitModal('點數不足，遊戲結束！');
+    }
     // 發送當前點數是否足夠擊發子彈
     if (currentPoint < bulletValues[this.bulletLevel]) {
       EventManager.eventTarget.emit('switch-can-fire', false);
@@ -214,5 +245,22 @@ export class GameSceneManager extends Component {
         this.point = currentPoint;
       })
       .start();
+  }
+
+  // 顯示開火失敗的警告
+  showFireFail() {
+    this.showPopupModal('點數不足，請減少子彈等級');
+  }
+
+  // 顯示彈出視窗
+  showPopupModal(text: string) {
+    this.popupModal.active = true;
+    this.modalText.string = text;
+  }
+
+  // 顯示「退出房間」彈出視窗
+  showPopupQuitModal(text: string) {
+    this.popupQuitModal.active = true;
+    this.quitModalText.string = text;
   }
 }
