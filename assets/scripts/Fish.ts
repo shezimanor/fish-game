@@ -200,6 +200,9 @@ export class Fish extends Component {
         this.closeNode.active = true;
       }
       this.bodyNode.active = false;
+    } else if (state.name === this.hitAnimationName) {
+      // 恢復游泳動畫
+      this.bodyAnimation.play('FishSwim');
     }
   }
 
