@@ -52,6 +52,7 @@ export class GameSceneManager extends Component {
     point: 0
   };
   private _tempTween: Tween<Record<string, number>> = null;
+  // 為了避免有動畫期間導致 this.point 尚未處於不動狀態，使用 this._cachedPoint 來暫存
   private _cachedPoint: number = 0;
 
   protected onLoad(): void {
@@ -130,6 +131,7 @@ export class GameSceneManager extends Component {
     if (this.bulletLevel < 7) {
       this.bulletLevel++;
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
+      this.checkPoint(this._cachedPoint);
     }
   }
 
@@ -137,6 +139,7 @@ export class GameSceneManager extends Component {
     if (this.bulletLevel > 1) {
       this.bulletLevel--;
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
+      this.checkPoint(this._cachedPoint);
     }
   }
 
@@ -183,20 +186,32 @@ export class GameSceneManager extends Component {
       bulletValue: bulletValues[this.bulletLevel]
     });
   }
+  checkPoint(currentPoint: number) {
+    // 發送當前點數是否足夠擊發子彈
+    if (currentPoint < bulletValues[this.bulletLevel]) {
+      EventManager.eventTarget.emit('switch-fire', false);
+    } else {
+      EventManager.eventTarget.emit('switch-fire', true);
+    }
+  }
 
   // 這個方法是用來更新玩家的點數
   updatePoint(currentPoint: number) {
+    this.checkPoint(currentPoint);
+    // 確認 tween 是否存在，並且運行中
     if (this._tempTween && this._tempTween.running) {
       this._tempTween.stop();
     }
     this._isTransition = true;
     this._tempPoint.point = this.point;
+    this._cachedPoint = currentPoint;
     this._tempTween = tween(this._tempPoint)
-      .to(0.5, { point: currentPoint })
+      .to(0.3, { point: currentPoint })
       .call(() => {
         // 動畫狀態關閉
         this._isTransition = false;
         this.playerPointLabel.string = `${currentPoint}`;
+        this.point = currentPoint;
       })
       .start();
   }
