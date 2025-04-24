@@ -34,6 +34,9 @@ export class Fish extends Component {
   // 倍率 Node
   @property(Node)
   public multiplierNode: Node = null;
+  // X Node
+  @property(Node)
+  public closeNode: Node = null;
   // 被擊中且中獎動畫（ZoomOut動畫）
   @property(CCString)
   private zoomOutAnimationName: string = '';
@@ -51,6 +54,7 @@ export class Fish extends Component {
   private _uuid: string = '';
   private _fishId: string = '';
   private _color: Color = new Color(255, 255, 255, 255);
+  private _killByOther: boolean = false;
 
   protected onLoad(): void {
     // 儲存初始數據
@@ -114,8 +118,10 @@ export class Fish extends Component {
   reset() {
     // 重置魚隻狀態
     this.isHittable = true;
-    // 重置倍率 Node
+    this._killByOther = false;
+    // 重置倍率,x Node
     this.multiplierNode.active = false;
+    this.closeNode.active = false;
     // 重置圖片 Node
     this.bodyNode.active = true;
     this.bodyNode.setScale(1, 1, 1);
@@ -151,10 +157,17 @@ export class Fish extends Component {
   }
 
   // 中獎處理
-  freezeFish() {
+  freezeAction() {
     // 魚隻停止移動
     this._speed = 0;
     this.playZoomOutAnimation();
+  }
+
+  // 被其他玩家消滅
+  killByOtherPlayer() {
+    this.isHittable = false;
+    this._killByOther = true;
+    this.freezeAction();
   }
 
   playHitAnimation() {
@@ -169,15 +182,24 @@ export class Fish extends Component {
   // 動畫播放結束
   onAnimationFinished(type: Animation.EventType, state: AnimationState) {
     if (state.name === this.zoomOutAnimationName) {
-      // 顯示倍率
-      this.multiplierNode.active = true;
-      this.bodyNode.active = false;
       // 延遲執行 stopAction
       this.scheduleOnce(() => {
         this.stopAction();
       }, 0.7);
-      // 觸發玩家點數更新
-      GameManager.instance.sendMessageWithRoomId('get-point', null);
+
+      // 玩家自己中獎
+      if (!this._killByOther) {
+        // 顯示倍率 Node
+        this.multiplierNode.active = true;
+        // 觸發玩家點數更新
+        GameManager.instance.sendMessageWithRoomId('get-point', null);
+      }
+      // 別的玩家中獎
+      else {
+        // 顯示 x Node
+        this.closeNode.active = true;
+      }
+      this.bodyNode.active = false;
     }
   }
 

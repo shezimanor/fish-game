@@ -49,6 +49,7 @@ export class FishManager extends Component {
     EventManager.eventTarget.on('spawn-fishes', this.spawnFishes, this);
     EventManager.eventTarget.on('stop-fish', this.stopFish, this); // Fish.ts 發布
     EventManager.eventTarget.on('return-result', this.getHitFishResult, this);
+    EventManager.eventTarget.on('other-got-fish', this.getOtherHitFish, this);
   }
 
   protected start(): void {
@@ -95,10 +96,18 @@ export class FishManager extends Component {
     const fishInstance = this._fishCached[response.uuid];
     if (response.result) {
       // 中獎了(內含 ZoomOut 動畫)
-      if (fishInstance) fishInstance.freezeFish();
+      if (fishInstance) fishInstance.freezeAction();
     } else {
       // 沒中(內含被 Hit 動畫)
       if (fishInstance) fishInstance.resetHittable();
+    }
+  }
+
+  getOtherHitFish(uuid: string) {
+    // console.log('getOtherHitFish', response);
+    const fishInstance = this._fishCached[uuid];
+    if (fishInstance) {
+      fishInstance.killByOtherPlayer();
     }
   }
 

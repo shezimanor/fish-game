@@ -187,6 +187,13 @@ export class GameManager extends Component {
           EventManager.eventTarget.emit('update-point', response.data);
         }
         break;
+      // 玩家中獎
+      case 'player-won':
+        if (response.succ) {
+          // response.data 是魚隻的 uuid
+          EventManager.eventTarget.emit('other-got-fish', response.data);
+        }
+        break;
       // 魚隻生成
       case 'spawn-fishes':
         if (response.succ) {
