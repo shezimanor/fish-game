@@ -59,7 +59,7 @@ export class GameSceneManager extends Component {
   private _tempPoint: Record<string, number> = {
     point: 0
   };
-  private _tempTween: Tween<Record<string, number>> = null;
+  private _tempTween: Tween = null;
   // 為了避免有動畫期間導致 this.point 尚未處於不動狀態，使用 this._cachedPoint 來暫存
   private _cachedPoint: number = 0;
 

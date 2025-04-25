@@ -110,6 +110,21 @@ export class FishManager extends Component {
     if (fishInstance) {
       fishInstance.killByOtherPlayer();
     }
+    // 通知大獎類型的魚被其他玩家捕獲
+    switch (fishInstance.fishType) {
+      case FishType.Fish_04:
+        EventManager.eventTarget.emit(
+          'show-toast',
+          `「章魚」被其他玩家捕獲(60x)`
+        );
+        break;
+      case FishType.Fish_05:
+        EventManager.eventTarget.emit(
+          'show-toast',
+          `「鯊魚」被其他玩家捕獲(300x)`
+        );
+        break;
+    }
   }
 
   stopFish(fish: Node, fishInstance: Fish) {

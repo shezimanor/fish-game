@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, tween, Vec3 } from 'cc';
+import { _decorator, Component, Label, Tween, tween, Vec3 } from 'cc';
 import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
@@ -9,6 +9,7 @@ export class Toast extends Component {
 
   private _showVec3: Vec3 = new Vec3(0, 325, 0);
   private _hideVec3: Vec3 = new Vec3(0, 400, 0);
+  private _tempTween: Tween = null;
 
   protected onLoad(): void {
     EventManager.eventTarget.on('show-toast', this.showToast, this);
@@ -20,9 +21,13 @@ export class Toast extends Component {
 
   // 顯示 Toast
   public showToast(message: string): void {
+    // 確認 tween 是否存在，並且運行中
+    if (this._tempTween && this._tempTween.running) {
+      this._tempTween.stop();
+    }
     this.toastLabel.string = message;
     this.node.active = true;
-    tween(this.node)
+    this._tempTween = tween(this.node)
       .to(0.5, { position: this._showVec3 })
       .call(() => {
         this.scheduleOnce(() => {
@@ -33,7 +38,7 @@ export class Toast extends Component {
   }
 
   public hideToast(): void {
-    tween(this.node)
+    this._tempTween = tween(this.node)
       .to(0.5, { position: this._hideVec3 })
       .call(() => {
         this.node.active = false;
