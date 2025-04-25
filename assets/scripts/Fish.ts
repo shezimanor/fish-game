@@ -165,7 +165,9 @@ export class Fish extends Component {
   // 中獎處理
   freezeAction() {
     // 魚隻停止移動
-    this._stopUpdating = true;
+    this.scheduleOnce(() => {
+      this._stopUpdating = true;
+    }, 0.1);
     this.playZoomOutAnimation();
   }
 
