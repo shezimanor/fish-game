@@ -2,7 +2,13 @@ import { _decorator, Component, Node, Prefab } from 'cc';
 import { FishPool } from './FishPool';
 import { EventManager } from './EventManager';
 import { Fish } from './Fish';
-import { FishConfig, FishType, HitFishResult } from './types/index.d';
+import {
+  FishConfig,
+  FishType,
+  HitFishResult,
+  SoundClipType
+} from './types/index.d';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FishManager')
@@ -98,9 +104,13 @@ export class FishManager extends Component {
     if (response.result) {
       // 中獎了(內含 ZoomOut 動畫)
       if (fishInstance) fishInstance.freezeAction();
+      // 播放音效
+      AudioManager.instance.playSound(SoundClipType.Win);
     } else {
       // 沒中(內含被 Hit 動畫)
       if (fishInstance) fishInstance.resetHittable();
+      // 播放音效
+      AudioManager.instance.playSound(SoundClipType.Hit);
     }
   }
 

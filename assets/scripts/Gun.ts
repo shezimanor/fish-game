@@ -15,7 +15,8 @@ import {
 import { BulletManager } from './BulletManager';
 import { GameManager } from './GameManager';
 import { EventManager } from './EventManager';
-import { GameSceneManager } from './GameSceneManager';
+import { SoundClipType } from './types/index.d';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Gun')
@@ -102,6 +103,8 @@ export class Gun extends Component {
     if (this._animation) this._animation.play();
     // 發射子彈
     this.bulletManager.spawnBullet();
+    // 播放音效
+    AudioManager.instance.playSound(SoundClipType.Bullet);
     // 扣點數(發布事件給 GameSceneManager，讓他傳訊息給後端)
     EventManager.eventTarget.emit('before-fire-bullet');
     // 發送射擊 'fire-gun' 事件(告訴其他玩家，我發射子彈了)

@@ -51,3 +51,16 @@ export interface HitFishResult {
   uuid: string; // 魚的 UUID
   point: number; // 加上中獎結果的當前點數總額(用不到)
 }
+
+// 音樂類型
+export enum MusicClipType {
+  Bgm
+}
+
+// 音效類型
+export enum SoundClipType {
+  Bullet, // 0
+  Win, // 1
+  Hit, // 2
+  Coin // 3
+}
