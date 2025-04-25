@@ -67,7 +67,7 @@ export class GameSceneManager extends Component {
     console.log('GameSceneManager onLoad');
     // 註冊事件
     EventManager.eventTarget.on('init-game-scene', this.initGameScene, this);
-    EventManager.eventTarget.on('player-joined', this.addOtherPlayer, this);
+    EventManager.eventTarget.on('player-joined', this.welcomeOtherPlayer, this);
     EventManager.eventTarget.on('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.on('rotate-gun', this.rotateGun, this);
     EventManager.eventTarget.on('fire-gun', this.fireGun, this);
@@ -92,7 +92,11 @@ export class GameSceneManager extends Component {
   protected onDestroy(): void {
     // 註銷事件
     EventManager.eventTarget.off('init-game-scene', this.initGameScene, this);
-    EventManager.eventTarget.off('player-joined', this.addOtherPlayer, this);
+    EventManager.eventTarget.off(
+      'player-joined',
+      this.welcomeOtherPlayer,
+      this
+    );
     EventManager.eventTarget.off('player-left', this.removeOtherPlayer, this);
     EventManager.eventTarget.off('rotate-gun', this.rotateGun, this);
     EventManager.eventTarget.off('fire-gun', this.fireGun, this);
@@ -115,7 +119,9 @@ export class GameSceneManager extends Component {
       this.point = data.point;
       this._cachedPoint = data.point;
       this.playerPointLabel.string = `${this.point}`;
-      if (data.other) this.addOtherPlayer(data.other);
+      if (data.other) {
+        this.addOtherPlayer(data.other);
+      }
       // 初始化子彈價值
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
       // 同步當前的魚群
@@ -172,6 +178,11 @@ export class GameSceneManager extends Component {
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
       this.checkPoint(this._cachedPoint);
     }
+  }
+
+  welcomeOtherPlayer(otherPlayerName: string) {
+    EventManager.eventTarget.emit('show-toast', `${otherPlayerName} 加入房間`);
+    this.addOtherPlayer(otherPlayerName);
   }
 
   addOtherPlayer(otherPlayerName: string) {
