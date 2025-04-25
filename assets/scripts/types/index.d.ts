@@ -11,6 +11,7 @@ export type ClientObject = {
   playerName: string;
   point: number;
   other?: string;
+  fishes?: FishConfig[]; // 魚的資料
 };
 
 // 子彈池名稱

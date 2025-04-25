@@ -118,6 +118,12 @@ export class GameSceneManager extends Component {
       if (data.other) this.addOtherPlayer(data.other);
       // 初始化子彈價值
       this.bulletValueLabel.string = `${bulletValues[this.bulletLevel]}`;
+      // 同步當前的魚群
+      if (data.fishes && data.fishes.length > 0) {
+        this.scheduleOnce(() => {
+          EventManager.eventTarget.emit('spawn-fishes', data.fishes);
+        }, 0);
+      }
     } else {
       console.error('initGameScene data is null');
     }

@@ -71,7 +71,7 @@ export class FishManager extends Component {
 
   spawnFishes(fishes: FishConfig[]) {
     // fishes 伺服器每次生成的魚群
-    // console.log('spawnFishes');
+    // console.log('spawnFishes', fishes.length);
     for (let i = 0; i < fishes.length; i++) {
       const curFish = fishes[i];
       const currentFishPool: FishPool = this[`${curFish.id}_pool`];
