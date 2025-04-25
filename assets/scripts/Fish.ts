@@ -9,8 +9,7 @@ import {
   Contact2DType,
   Enum,
   Node,
-  Sprite,
-  UITransform
+  Sprite
 } from 'cc';
 import { FishConfig, FishType } from './types/index.d';
 import { EventManager } from './EventManager';
@@ -48,18 +47,17 @@ export class Fish extends Component {
   public isHittable: boolean = true;
 
   private _speed: number = 200;
-  private _radius: number = 0;
-  private _border: number = 640;
   private _collider: Collider2D = null;
   private _uuid: string = '';
-  private _fishId: string = '';
+  // private _fishId: string = '';
+  private _spawnX: number = 0;
+  private _spawnTime: number = 0;
+  private _maxLifeTime: number = 0;
   private _color: Color = new Color(255, 255, 255, 255);
   private _killByOther: boolean = false;
+  private _stopUpdating: boolean = false;
 
   protected onLoad(): void {
-    // 儲存初始數據
-    this._radius = this.getComponent(UITransform).width / 2;
-
     // 設定動畫事件
     if (this.bodyAnimation) {
       this.bodyAnimation.on(
@@ -81,15 +79,19 @@ export class Fish extends Component {
   }
 
   update(deltaTime: number) {
+    if (this._stopUpdating) return;
+    // 其實 now 應該要跟伺服器拿，但在這個 demo 先忽略不做
+    const now = Date.now();
+    // 單位(秒)
+    const elapsedTime = (now - this._spawnTime) / 1000;
+    // 魚隻在這段時間應該要移動的距離
+    const distance = this._speed * elapsedTime;
+    const currentX = this._spawnX - distance;
     const position = this.node.position;
-    this.node.setPosition(
-      position.x - this._speed * deltaTime,
-      position.y,
-      position.z
-    );
+    this.node.setPosition(currentX, position.y, position.z);
 
     // 如果魚隻超出邊界，就回收魚隻
-    if (position.x <= -(this._border + this._radius)) {
+    if (currentX <= -this._spawnX || elapsedTime > this._maxLifeTime) {
       this.stopAction();
     }
   }
@@ -119,6 +121,7 @@ export class Fish extends Component {
     // 重置魚隻狀態
     this.isHittable = true;
     this._killByOther = false;
+    this._stopUpdating = false;
     // 重置倍率,x Node
     this.multiplierNode.active = false;
     this.closeNode.active = false;
@@ -146,7 +149,10 @@ export class Fish extends Component {
   updateFishData(fish: FishConfig) {
     this._uuid = fish.uuid;
     this._speed = fish.speed;
-    this._fishId = fish.id;
+    // this._fishId = fish.id;
+    this._spawnX = fish.spawnX;
+    this._spawnTime = fish.spawnTime;
+    this._maxLifeTime = fish.maxLifeTime;
     return { uuid: this._uuid, fishInstance: this };
   }
 
@@ -159,7 +165,7 @@ export class Fish extends Component {
   // 中獎處理
   freezeAction() {
     // 魚隻停止移動
-    this._speed = 0;
+    this._stopUpdating = true;
     this.playZoomOutAnimation();
   }
 
@@ -185,7 +191,7 @@ export class Fish extends Component {
       // 延遲執行 stopAction
       this.scheduleOnce(() => {
         this.stopAction();
-      }, 0.7);
+      }, 0.5);
 
       // 玩家自己中獎
       if (!this._killByOther) {
@@ -202,7 +208,9 @@ export class Fish extends Component {
       this.bodyNode.active = false;
     } else if (state.name === this.hitAnimationName) {
       // 恢復游泳動畫
-      this.bodyAnimation.play('FishSwim');
+      this.scheduleOnce(() => {
+        this.bodyAnimation.play('FishSwim');
+      }, 0.1);
     }
   }
 
@@ -214,7 +222,7 @@ export class Fish extends Component {
     // 魚隻被擊中
     if (this.isHittable) {
       this.isHittable = false;
-      console.log('Hit Fish: ', this._fishId);
+      // console.log('Hit Fish: ', this._fishId);
       // 發送擊中魚隻 'hit-fish' 事件
       EventManager.eventTarget.emit('before-hit-fish', this._uuid);
       // 停用「子彈」的碰撞元件（停止檢測碰撞）

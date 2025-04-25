@@ -34,10 +34,12 @@ export interface FishConfig {
   name: string; // 名稱
   level: number; // 等級
   speed: number; // 速度: 每秒移動的距離(px)
+  radiusW: number; // 圖片半徑(寬的一半)
   radiusH: number; // 圖片半徑(高的一半)
   spawnX: number; // 生成位置 x
   spawnY: number; // 生成位置 y
   spawnTime: number; // 生成時間
+  maxLifeTime: number; // 魚的生命時間
   isActive: boolean; // 是否在遊戲中
 }
 

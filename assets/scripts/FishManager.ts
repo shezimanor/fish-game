@@ -70,6 +70,7 @@ export class FishManager extends Component {
   }
 
   spawnFishes(fishes: FishConfig[]) {
+    // fishes 伺服器每次生成的魚群
     // console.log('spawnFishes');
     for (let i = 0; i < fishes.length; i++) {
       const curFish = fishes[i];
