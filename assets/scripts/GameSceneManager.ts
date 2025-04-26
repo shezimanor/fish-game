@@ -153,17 +153,19 @@ export class GameSceneManager extends Component {
     // 發送離開房間 'leave-room' 事件 (玩家的名字讓伺服器自己傳)
     GameManager.instance.sendMessage('leave-room', null);
     // 離開遊戲場景(可以先還原一些狀態)
-    this.removeOtherPlayer();
-    this.playerNameLabel.string = '';
-    this.playerPointLabel.string = '';
-    this.roomIdLabel.string = '';
-    this.popupModal.active = false;
-    this.popupQuitModal.active = false;
-    director.loadScene('01-start-scene', (err, scene) => {
-      // console.log('StartScene 加載成功');
-      // response.data 是完整的自己的玩家資料
-      EventManager.eventTarget.emit('init-start-scene');
-    });
+    this.scheduleOnce(() => {
+      this.removeOtherPlayer();
+      this.playerNameLabel.string = '';
+      this.playerPointLabel.string = '';
+      this.roomIdLabel.string = '';
+      this.popupModal.active = false;
+      this.popupQuitModal.active = false;
+      director.loadScene('01-start-scene', (err, scene) => {
+        // console.log('StartScene 加載成功');
+        // response.data 是完整的自己的玩家資料
+        EventManager.eventTarget.emit('init-start-scene');
+      });
+    }, 0.5);
   }
 
   onClickPlus() {

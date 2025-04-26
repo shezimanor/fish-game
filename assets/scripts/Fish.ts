@@ -36,12 +36,6 @@ export class Fish extends Component {
   // X Node
   @property(Node)
   public closeNode: Node = null;
-  // 被擊中且中獎動畫（ZoomOut動畫）
-  @property(CCString)
-  private zoomOutAnimationName: string = '';
-  // 被擊中沒中獎動畫（Hit動畫）
-  @property(CCString)
-  private hitAnimationName: string = '';
 
   // 可以被攻擊的狀態
   public isHittable: boolean = true;
@@ -164,12 +158,8 @@ export class Fish extends Component {
 
   // 中獎處理
   freezeAction() {
-    console.log('中獎處理', this._fishId);
     // 魚隻停止移動
-    this.scheduleOnce(() => {
-      console.log(`中獎的魚 ${this._fishId} 延遲 stop updating`);
-      this._stopUpdating = true;
-    }, 0.1);
+    this._stopUpdating = true;
     this.playZoomOutAnimation();
   }
 
@@ -181,17 +171,19 @@ export class Fish extends Component {
   }
 
   playHitAnimation() {
-    this.bodyAnimation.play(this.hitAnimationName);
+    this.bodyAnimation.stop();
+    this.bodyAnimation.play('FishHit');
   }
 
   // 播放 ZoomOut 動畫
   playZoomOutAnimation() {
-    this.bodyAnimation.play(this.zoomOutAnimationName);
+    this.bodyAnimation.stop();
+    this.bodyAnimation.play('FishZoomOut');
   }
 
   // 動畫播放結束
   onAnimationFinished(type: Animation.EventType, state: AnimationState) {
-    if (state.name === this.zoomOutAnimationName) {
+    if (state.name === 'FishZoomOut') {
       // 延遲執行 stopAction
       this.scheduleOnce(() => {
         this.stopAction();
@@ -210,11 +202,11 @@ export class Fish extends Component {
         this.closeNode.active = true;
       }
       this.bodyNode.active = false;
-    } else if (state.name === this.hitAnimationName) {
+    } else if (state.name === 'FishHit') {
       // 恢復游泳動畫
       this.scheduleOnce(() => {
         this.bodyAnimation.play('FishSwim');
-      }, 0.1);
+      }, 0);
     }
   }
 
