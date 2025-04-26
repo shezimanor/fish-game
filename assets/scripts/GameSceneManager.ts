@@ -79,6 +79,7 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.on('before-hit-fish', this.beforeHitFish, this);
     EventManager.eventTarget.on('update-point', this.updatePoint, this);
     EventManager.eventTarget.on('show-fire-fail', this.showFireFail, this);
+    EventManager.eventTarget.on('websocket-disconnect', this.stopGame, this);
   }
 
   protected update(dt: number): void {
@@ -108,6 +109,7 @@ export class GameSceneManager extends Component {
     EventManager.eventTarget.off('before-hit-fish', this.beforeHitFish, this);
     EventManager.eventTarget.off('update-point', this.updatePoint, this);
     EventManager.eventTarget.off('show-fire-fail', this.showFireFail, this);
+    EventManager.eventTarget.off('websocket-disconnect', this.stopGame, this);
   }
 
   initGameScene(data: ClientObject) {
@@ -280,5 +282,10 @@ export class GameSceneManager extends Component {
   showPopupQuitModal(text: string) {
     this.popupQuitModal.active = true;
     this.quitModalText.string = text;
+  }
+
+  // 停止遊戲
+  stopGame() {
+    this.showPopupQuitModal('伺服器斷線，請重新連線');
   }
 }

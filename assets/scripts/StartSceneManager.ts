@@ -29,12 +29,15 @@ export class StartSceneManager extends Component {
   public roomIdInput: EditBox = null;
   @property(EditBox)
   public playerNameInput: EditBox = null;
+  @property(Node)
+  public ErrorLabel: Node = null;
 
   protected onLoad(): void {
     console.log('StartSceneManager onLoad');
     // 註冊事件
     EventManager.eventTarget.on('init-start-scene', this.initButtons, this);
     EventManager.eventTarget.on('response-fail', this.showResponseFail, this);
+    EventManager.eventTarget.on('websocket-disconnect', this.stopAction, this);
   }
 
   start() {
@@ -47,6 +50,7 @@ export class StartSceneManager extends Component {
     // 註銷事件
     EventManager.eventTarget.off('init-start-scene', this.initButtons, this);
     EventManager.eventTarget.off('response-fail', this.showResponseFail, this);
+    EventManager.eventTarget.off('websocket-disconnect', this.stopAction, this);
   }
 
   initButtons() {
@@ -109,5 +113,12 @@ export class StartSceneManager extends Component {
   showResponseFail(msg: string) {
     this.popupModal.active = true;
     this.modalText.string = msg;
+  }
+
+  stopAction() {
+    console.log('stopAction');
+    this.ErrorLabel.active = true;
+    this.createRoomButton.interactable = false;
+    this.joinRoomButton.interactable = false;
   }
 }
