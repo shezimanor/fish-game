@@ -64,7 +64,7 @@ export class GameSceneManager extends Component {
   private _cachedPoint: number = 0;
 
   protected onLoad(): void {
-    console.log('GameSceneManager onLoad');
+    // console.log('GameSceneManager onLoad');
     // 註冊事件
     EventManager.eventTarget.on('init-game-scene', this.initGameScene, this);
     EventManager.eventTarget.on('player-joined', this.welcomeOtherPlayer, this);
@@ -160,7 +160,7 @@ export class GameSceneManager extends Component {
     this.popupModal.active = false;
     this.popupQuitModal.active = false;
     director.loadScene('01-start-scene', (err, scene) => {
-      console.log('StartScene 加載成功');
+      // console.log('StartScene 加載成功');
       // response.data 是完整的自己的玩家資料
       EventManager.eventTarget.emit('init-start-scene');
     });
@@ -211,7 +211,7 @@ export class GameSceneManager extends Component {
 
   // 這個方法是用來控制其他玩家的槍管擊發動畫，自己的槍管不會被這個方法控制
   fireGun() {
-    console.log('fireGun');
+    // console.log('fireGun');
     // 播放開火動畫
     if (this.otherGunBodyAnimation) this.otherGunBodyAnimation.play();
   }
@@ -247,7 +247,8 @@ export class GameSceneManager extends Component {
   }
 
   // 這個方法是用來更新玩家的點數
-  updatePoint(currentPoint: number) {
+  updatePoint(currentPoint: number, delay: boolean) {
+    // 如果是中獎的點數更新 delay 為 true，因為要等金幣動畫結束
     this.checkPoint(currentPoint);
     // 確認 tween 是否存在，並且運行中
     if (this._tempTween && this._tempTween.running) {
@@ -257,6 +258,7 @@ export class GameSceneManager extends Component {
     this._tempPoint.point = this.point;
     this._cachedPoint = currentPoint;
     this._tempTween = tween(this._tempPoint)
+      .delay(delay ? 0.8 : 0)
       .to(0.3, { point: currentPoint })
       .call(() => {
         // 動畫狀態關閉

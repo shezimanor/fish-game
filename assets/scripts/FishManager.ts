@@ -103,7 +103,15 @@ export class FishManager extends Component {
     const fishInstance = this._fishCached[response.uuid];
     if (response.result) {
       // 中獎了(內含 ZoomOut 動畫)
-      if (fishInstance) fishInstance.freezeAction();
+      if (fishInstance) {
+        // 魚隻自身處理
+        fishInstance.freezeAction();
+        // 播放金幣動畫
+        EventManager.eventTarget.emit('spawn-coins', {
+          fishType: fishInstance.fishType,
+          startPosition: fishInstance.node.position
+        });
+      }
       // 播放音效
       AudioManager.instance.playSound(SoundClipType.Win);
     } else {

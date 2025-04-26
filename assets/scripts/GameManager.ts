@@ -18,7 +18,7 @@ export class GameManager extends Component {
   public roomId: string = '';
 
   protected onLoad(): void {
-    console.log('gameManager onLoad');
+    // console.log('gameManager onLoad');
     // 單例模式
     if (!GameManager._instance) {
       // console.log('GameManager instance created');
@@ -34,7 +34,7 @@ export class GameManager extends Component {
   }
 
   protected onDestroy(): void {
-    console.log('gameManager onDestroy');
+    // console.log('gameManager onDestroy');
     if (GameManager._instance === this) {
       GameManager._instance = null;
     }
@@ -47,7 +47,7 @@ export class GameManager extends Component {
   private _installWebSocketEvent(ws: WebSocket): void {
     // 偵聽連接打開事件
     this._ws.onopen = (event) => {
-      console.log('WebSocket connected');
+      // console.log('WebSocket connected');
       // 將 StartScene 的按鈕改成可互動
       EventManager.eventTarget.emit('init-start-scene');
     };
@@ -61,13 +61,13 @@ export class GameManager extends Component {
 
     // 偵聽連接關閉事件
     this._ws.onclose = (event) => {
-      console.log('WebSocket disconnected');
+      // console.log('WebSocket disconnected');
       EventManager.eventTarget.emit('websocket-disconnect');
     };
 
     // 偵聽錯誤事件
     this._ws.onerror = (event) => {
-      console.error('WebSocket error:', event);
+      // console.error('WebSocket error:', event);
       EventManager.eventTarget.emit('websocket-disconnect');
     };
   }
@@ -104,13 +104,13 @@ export class GameManager extends Component {
       // 玩家建立房間
       case 'room-created':
         if (response.succ) {
-          console.log('房間建立成功:', response.data);
+          // console.log('房間建立成功:', response.data);
           // 將房間 ID 儲存到 GameManager 中
           this.roomId = response.data.roomId;
           director.loadScene('02-game-scene', (err, scene) => {
             if (err)
               EventManager.eventTarget.emit('response-fail', '加載場景失敗');
-            console.log('GameScene 加載成功');
+            // console.log('GameScene 加載成功');
             // response.data 是完整的自己的玩家資料
             EventManager.eventTarget.emit('init-game-scene', response.data);
           });
@@ -121,13 +121,13 @@ export class GameManager extends Component {
       // 玩家加入房間
       case 'room-joined':
         if (response.succ) {
-          console.log('房間加入成功:', response.data);
+          // console.log('房間加入成功:', response.data);
           // 將房間 ID 儲存到 GameManager 中
           this.roomId = response.data.roomId;
           director.loadScene('02-game-scene', (err, scene) => {
             if (err)
               EventManager.eventTarget.emit('response-fail', '加載場景失敗');
-            console.log('GameScene 加載成功');
+            // console.log('GameScene 加載成功');
             // response.data 是完整的自己的玩家資料
             EventManager.eventTarget.emit('init-game-scene', response.data);
           });
@@ -138,7 +138,7 @@ export class GameManager extends Component {
       // 其他玩家加入房間
       case 'player-joined':
         if (response.succ) {
-          console.log('玩家加入成功:', response.data);
+          // console.log('玩家加入成功:', response.data);
           // response.data 是新玩家的名稱
           EventManager.eventTarget.emit('player-joined', response.data);
         }
@@ -146,7 +146,7 @@ export class GameManager extends Component {
       // 其他玩家離開房間
       case 'player-left':
         if (response.succ) {
-          console.log('玩家離開:', response.data);
+          // console.log('玩家離開:', response.data);
           // response.data 是玩家的名稱
           EventManager.eventTarget.emit('player-left', response.data);
         }
@@ -169,7 +169,7 @@ export class GameManager extends Component {
       case 'spend-point':
         if (response.succ) {
           // response.data 是扣除本次的子彈花費後的新的點數總量
-          EventManager.eventTarget.emit('update-point', response.data);
+          EventManager.eventTarget.emit('update-point', response.data, false);
         }
         break;
       // 中獎回報
@@ -177,15 +177,12 @@ export class GameManager extends Component {
         if (response.succ) {
           // response.data 是 { result, uuid, fishId, point } 其中 point 是玩家的新點數總值
           EventManager.eventTarget.emit('return-result', response.data);
-        } else {
-          // TODO: 找不到魚隻
-          console.log('❌ return-result:', response.msg);
         }
         break;
       case 'get-point-response':
         if (response.succ) {
           // response.data 是新的點數總量
-          EventManager.eventTarget.emit('update-point', response.data);
+          EventManager.eventTarget.emit('update-point', response.data, true);
         }
         break;
       // 玩家中獎

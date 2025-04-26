@@ -49,7 +49,7 @@ export class Fish extends Component {
   private _speed: number = 200;
   private _collider: Collider2D = null;
   private _uuid: string = '';
-  // private _fishId: string = '';
+  private _fishId: string = '';
   private _spawnX: number = 0;
   private _spawnTime: number = 0;
   private _maxLifeTime: number = 0;
@@ -149,7 +149,7 @@ export class Fish extends Component {
   updateFishData(fish: FishConfig) {
     this._uuid = fish.uuid;
     this._speed = fish.speed;
-    // this._fishId = fish.id;
+    this._fishId = fish.id;
     this._spawnX = fish.spawnX;
     this._spawnTime = fish.spawnTime;
     this._maxLifeTime = fish.maxLifeTime;
@@ -164,8 +164,10 @@ export class Fish extends Component {
 
   // 中獎處理
   freezeAction() {
+    console.log('中獎處理', this._fishId);
     // 魚隻停止移動
     this.scheduleOnce(() => {
+      console.log(`中獎的魚 ${this._fishId} 延遲 stop updating`);
       this._stopUpdating = true;
     }, 0.1);
     this.playZoomOutAnimation();
