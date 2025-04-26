@@ -41,10 +41,10 @@ export class BulletManager extends Component {
   }
 
   spawnBullet() {
-    const bullet = instantiate(this.bulletPrefab);
+    const bullet = this.bullet_pool.getBullet();
     bullet.getComponent(Bullet).initDirection(this.gunBody.angle);
-    bullet.setParent(this.node);
     bullet.setPosition(0, 0, 0);
+    bullet.setParent(this.node);
   }
 
   stopBullet(bullet: Node) {

@@ -6,9 +6,6 @@ const { ccclass, property } = _decorator;
 Enum(BulletPoolName);
 @ccclass('Bullet')
 export class Bullet extends Component {
-  // 物件池名稱
-  @property({ type: BulletPoolName })
-  public poolName: BulletPoolName = BulletPoolName.BulletPool;
   // 速度
   @property(CCInteger)
   public speed: number = 1000;
