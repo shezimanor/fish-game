@@ -62,13 +62,19 @@ export class GameManager extends Component {
     // 偵聽連接關閉事件
     this._ws.onclose = (event) => {
       // console.log('WebSocket disconnected');
-      EventManager.eventTarget.emit('websocket-disconnect');
+      EventManager.eventTarget.emit(
+        'websocket-disconnect',
+        '伺服器斷線，請重新連線'
+      );
     };
 
     // 偵聽錯誤事件
     this._ws.onerror = (event) => {
       // console.error('WebSocket error:', event);
-      EventManager.eventTarget.emit('websocket-disconnect');
+      EventManager.eventTarget.emit(
+        'websocket-disconnect',
+        '伺服器斷線，請重新連線'
+      );
     };
   }
 
@@ -115,7 +121,7 @@ export class GameManager extends Component {
             EventManager.eventTarget.emit('init-game-scene', response.data);
           });
         } else {
-          EventManager.eventTarget.emit('response-fail', '建立房間失敗');
+          EventManager.eventTarget.emit('response-fail', response.msg);
         }
         break;
       // 玩家加入房間
@@ -197,6 +203,13 @@ export class GameManager extends Component {
         if (response.succ) {
           // response.data 是魚的資料(為陣列)
           EventManager.eventTarget.emit('spawn-fishes', response.data);
+        }
+        break;
+      // 房間時間到
+      case 'room-timeout':
+        if (response.succ) {
+          // response.data 是房間時間到的文字訊息
+          EventManager.eventTarget.emit('room-timeout', response.data);
         }
         break;
     }
