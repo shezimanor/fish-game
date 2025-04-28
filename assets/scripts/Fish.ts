@@ -204,9 +204,7 @@ export class Fish extends Component {
       this.bodyNode.active = false;
     } else if (state.name === 'FishHit') {
       // 恢復游泳動畫
-      this.scheduleOnce(() => {
-        this.bodyAnimation.play('FishSwim');
-      }, 0);
+      this.bodyAnimation.play('FishSwim');
     }
   }
 
