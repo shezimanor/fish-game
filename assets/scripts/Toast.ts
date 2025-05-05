@@ -1,14 +1,16 @@
-import { _decorator, Component, Label, Tween, tween, Vec3 } from 'cc';
+import { _decorator, Component, Label, Tween, tween, Vec3, Node } from 'cc';
 import { EventManager } from './EventManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Toast')
 export class Toast extends Component {
+  @property(Node)
+  public toastItem: Node = null;
   @property(Label)
   public toastLabel: Label = null;
 
-  private _showVec3: Vec3 = new Vec3(0, 325, 0);
-  private _hideVec3: Vec3 = new Vec3(0, 400, 0);
+  private _showVec3: Vec3 = new Vec3(0, 0, 0);
+  private _hideVec3: Vec3 = new Vec3(0, 75, 0);
   private _tempTween: Tween = null;
 
   protected onLoad(): void {
@@ -26,8 +28,8 @@ export class Toast extends Component {
       this._tempTween.stop();
     }
     this.toastLabel.string = message;
-    this.node.active = true;
-    this._tempTween = tween(this.node)
+    this.toastItem.active = true;
+    this._tempTween = tween(this.toastItem)
       .to(0.5, { position: this._showVec3 })
       .call(() => {
         this.scheduleOnce(() => {
@@ -38,10 +40,10 @@ export class Toast extends Component {
   }
 
   public hideToast(): void {
-    this._tempTween = tween(this.node)
+    this._tempTween = tween(this.toastItem)
       .to(0.5, { position: this._hideVec3 })
       .call(() => {
-        this.node.active = false;
+        this.toastItem.active = false;
         this.toastLabel.string = '';
       })
       .start();

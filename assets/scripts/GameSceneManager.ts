@@ -156,7 +156,7 @@ export class GameSceneManager extends Component {
     GameManager.instance.sendMessage('leave-room', null);
     // 離開遊戲場景(可以先還原一些狀態)
     this.scheduleOnce(() => {
-      this.removeOtherPlayer();
+      this.removeOtherPlayer('');
       this.playerNameLabel.string = '';
       this.playerPointLabel.string = '';
       this.roomIdLabel.string = '';
@@ -200,8 +200,13 @@ export class GameSceneManager extends Component {
     }
   }
 
-  removeOtherPlayer() {
+  removeOtherPlayer(otherPlayerName: string) {
     // console.log('GameSceneManager removeOtherPlayer');
+    if (otherPlayerName)
+      EventManager.eventTarget.emit(
+        'show-toast',
+        `${otherPlayerName} 離開房間`
+      );
     this.otherPlayerNode.active = false;
     this.otherPlayerUI.active = false;
     this.otherPlayerNameLabel.string = '';
