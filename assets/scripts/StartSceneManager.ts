@@ -58,6 +58,8 @@ export class StartSceneManager extends Component {
     // 將 StartScene 的按鈕改成可互動
     this.createRoomButton.interactable = true;
     this.joinRoomButton.interactable = true;
+    this.addButton.interactable = true;
+    this.quitButton.interactable = true;
   }
 
   onClickCreateRoom() {
@@ -69,6 +71,9 @@ export class StartSceneManager extends Component {
       GameManager.instance.sendMessage('create-room', {
         playerName: this.playerNameInput.string
       });
+      // 等待事件回應期間，將按鈕設為不可互動
+      this.createRoomButton.interactable = false;
+      this.joinRoomButton.interactable = false;
     }
   }
 
@@ -92,6 +97,9 @@ export class StartSceneManager extends Component {
         roomId: this.roomIdInput.string,
         playerName: this.playerNameInput.string
       });
+      // 等待事件回應期間，將按鈕設為不可互動
+      this.addButton.interactable = false;
+      this.quitButton.interactable = false;
     }
   }
 
@@ -120,5 +128,7 @@ export class StartSceneManager extends Component {
     this.ErrorLabel.active = true;
     this.createRoomButton.interactable = false;
     this.joinRoomButton.interactable = false;
+    this.addButton.interactable = false;
+    this.quitButton.interactable = false;
   }
 }
