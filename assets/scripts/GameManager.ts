@@ -27,7 +27,7 @@ export class GameManager extends Component {
       this.destroy();
     }
     // 連接 WebSocket 伺服器
-    this._ws = new WebSocket('ws://192.168.0.55:3000');
+    this._ws = new WebSocket('wss://fish-game-server.fly.dev');
     this._installWebSocketEvent(this._ws);
     // 設為常駐節點(防止切換場景時被卸載)
     director.addPersistRootNode(this.node);
