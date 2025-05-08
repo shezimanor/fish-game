@@ -1,5 +1,13 @@
 # 捕魚遊戲 DEMO
 
+## 遊戲連結
+
+[Demo 連結](https://shezimanor.github.io/fish-game/)
+
+## 遊戲截圖
+
+![遊戲截圖](readme/fish-game.png)
+
 ## 遊戲說明
 
 本遊戲專案使用 `Cocos Creator 3.8.5` 建置。
